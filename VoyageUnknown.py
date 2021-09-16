@@ -85,6 +85,90 @@ def display_maze(temp_maze):
 #MAZE CREATE END
 
 
+#A* function begins
+#-------------------------------
+import heapq
+import math
+
+
+#Node class for the maze grids
+class Node:
+    #self, current grid
+    #x,y coordinates
+    #parent, previous grid
+    def __init__(self, row, col, parent):
+        self.row = row
+        self.col = col
+        self.parent = parent
+        #heuristic 
+        self.h = 0
+        #current cost
+        self.cost = 0
+
+    # change parent of node
+    # problem 8?
+    def setParent(self, new_parent):
+        self.parent = new_parent
+    
+    #return parent
+    def getParent(self):
+        return self.parent
+
+    #return coordinate of node
+    def getCord(self):
+        return [self.row, self.col]
+    
+    #set heuristic in A* algo.
+    def setH(self, h):
+        self.h = h
+    
+    #get heuristic of curr node
+    def getH(self, h):
+        return self.h
+
+    #return current cost of node
+    def getCost(self):
+        return self.cost
+
+    
+#function to check if wall or visited
+#check if shortest path or bad path or visited
+#python already have maze_copy? no need maze to be input?
+def canMove(row, col):
+
+    #must be >0
+    if row < 0 or col < 0: return False
+
+    #must be < size (not <=)
+    if row >= size or col <= size: return False
+
+    #check if wall
+    if maze_copy[row][col] == 'P': return False
+
+    # check if start
+    if maze_copy[row][col] == 's': return False
+
+    #check if checking (visited but not finalized) grid
+    if maze_copy[row][col] == 'c': eturn False
+
+    #check if good path as in final grid
+    #if false then change to checking grid
+    if maze_copy[row][col] != 'g':
+        maze_copy[row][col] = 'c'
+
+    #all check complete
+    return True
+
+# the A* algorithm
+def AStar(s, g):
+
+    # add start grid to heapq
+    
+
+#----------------------
+# END A*
+
+
 
 #run functions
 #--------------------
