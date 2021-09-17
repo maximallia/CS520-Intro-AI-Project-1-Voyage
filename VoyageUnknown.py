@@ -376,7 +376,7 @@ while runnable:
 
     else: print('No path to Goal.')
 
-
+    runnable = False
 
 
 #--------------------
