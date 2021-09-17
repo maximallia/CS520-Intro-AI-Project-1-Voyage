@@ -30,9 +30,13 @@ def create(ffs, maze1):
     for x in range(size):
         for y in range(size):
             
-            if x==0 and y==0: color1='green'
+            if x==0 and y==0 :
+                color1 = 'green'
+
+            elif maze1[x][y] == 's':
+                color = 'green'
             
-            #white is the accessible path
+            #white is the accessible grid
             elif maze1[x][y] == 'w':
                 color1 = 'White'
             
@@ -40,7 +44,11 @@ def create(ffs, maze1):
             elif maze1[x][y] == 'P':
                 color1 = 'black'
                 
-            #the found good path color is yellow    
+            # x is visited grid, but not final path
+            elif maze1[x][y] == 'x':
+                color1 = 'grey'
+        
+            # 'g' is the final path    
             elif maze1[x][y] == 'g':
                 color1 = 'yellow'
             
