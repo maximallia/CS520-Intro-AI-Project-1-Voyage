@@ -108,6 +108,8 @@ import math
 #for problem 8
 from datetime import datetime
 
+from matplotlib import pyplot as plt
+
 #Node class for the maze grids
 class Node:
     #self, current grid
@@ -140,7 +142,7 @@ class Node:
         self.h = h
     
     #get heuristic of curr node
-    def getH(self, h):
+    def getH(self):
         return self.h
 
     # set the actual cost of node
@@ -150,6 +152,10 @@ class Node:
     #return current cost of node
     def getCost(self):
         return self.cost
+    
+    # return the comparison of h value between the curr and new node
+    def __lt__(self, other):
+        return self.h < other.h
 
     
 #function to check if wall or visited
@@ -158,19 +164,24 @@ class Node:
 def canMove(row, col):
 
     #must be >0
-    if row < 0 or col < 0: return False
+    if row < 0 or col < 0:
+        return False
 
     #must be < size (not <=)
-    if row >= size or col <= size: return False
+    if row >= size or col >= size:
+        return False
 
     #check if wall
-    if maze_copy[row][col] == 'P': return False
+    if maze_copy[row][col] == 'P':
+        return False
 
     # check if start
-    if maze_copy[row][col] == 's': return False
+    if maze_copy[row][col] == 's':
+        return False
 
     #check if checking (visited but not finalized) grid
-    if maze_copy[row][col] == 'c': return False
+    if maze_copy[row][col] == 'c':
+        return False
 
     #check if good path as in final grid
     #if false then change to checking grid
@@ -182,7 +193,7 @@ def canMove(row, col):
 
 # the heuristics
 def euclidean(x_1, x_2, y_1, y_2):
-    distance = ( ((x_1 - x_2) ** 2) + ((y_1 - y_2) ** 2) )** 0.5
+    distance = ( ( ((x_1 - x_2) ** 2) + ((y_1 - y_2) ** 2) )** 0.5)
     return distance
 
 def manhattan(x_1, x_2, y_1, y_2):
@@ -226,7 +237,7 @@ def move_robot(curr_x, g_x, curr_y, g_y, curr_node, h_type):
 
     # 2.2) set new h_value, store into node
     new_distance = h_function(h_type, curr_x, g_x, curr_y, g_y)
-    new_h = cost + new_distance
+    new_h = new_cost + new_distance
     new_node.setH(new_h)
 
     # 3) return new_node
@@ -249,25 +260,34 @@ def AStar(s, g, type_h):
 
     # init the start grid
     # Node class: __init__(self, row, col, parent)
-    start_node = Node(start[0], start[1], Node)
+    start_node = Node(s[0], s[1], Node)
 
     # h_function(h_formula, x_1, x_2, y_1, y_2)
-    distance = h_function(type_h, start[0], goal[0], start[1], goal[1])
+    distance = h_function(type_h, s[0], g_x, s[1], g_y)
 
     # set heuristic value to start node
-    start_grid.setH(distance)
+    start_node.setH(distance)
 
     # push starter node into heap
-    heapq.heappush(heap, start_node)
+    heapq.heappush(fringe_heap, start_node)
 
     # while the fringe_heap is not empty
     # if not while, then goal is unreachable
+    
+    print('start node:')
+    print(start_node.getH())
+    print("\n")
+    
     while fringe_heap:
-
+        
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
         
+        print('current node h:')
+        
+        print(curr_node.getH())
+        print("\n")
         # append the current node to visited
         visited.append(curr_node)
 
@@ -276,38 +296,64 @@ def AStar(s, g, type_h):
         curr_x = curr_cord[0]
         curr_y = curr_cord[1]
         
+        print('x: ', curr_x,' y: ', curr_y)
+        
+        # get the new cost for next node, +1 b/c include new node
+        cost = curr_node.getCost() + 1
+        
         # if curr_cord is the goal grid, stop and return visited
         # which is return the path
-        if curr_cord == g: return visited
+        if curr_cord == g:
+            return visited
 
         # if not goal, check if moveable in direction
         # directions: up, down, right, left
-        # if appliable create node with move_robot, push node into heap
+        # if applicable create node with move_robot, push node into heap
 
         # up
         up = curr_y - 1
         if canMove(curr_x, up):
-            new_node = move_robot(curr_x, g_x, up, g_y, curr_node, h_type)
+            
+            print('up')
+            
+            new_node = move_robot(curr_x, g_x, up, g_y, curr_node, type_h)
+            
             heapq.heappush(fringe_heap, new_node)
+            
 
         #down
         down = curr_y + 1
         if canMove(curr_x, down):
-            new_node = move_robot(curr_x, g_x, down, g_y, curr_node, h_type)
+            
+            print('down')
+            new_node = move_robot(curr_x, g_x, down, g_y, curr_node, type_h)            
+            
             heapq.heappush(fringe_heap, new_node)
         
         # left
         left = curr_x - 1
-        if canMove(right, curr_y):
-            new_node = move_robot(left, g_x, curr_y, g_y, curr_node, h_type)
-            heapq.heappush(fringe_heap, new_node)
+        if canMove(left, curr_y):
+                  
+            print('left')
+            
+            new_node = move_robot(left, g_x, curr_y, g_y, curr_node, type_h)
 
+            heapq.heappush(fringe_heap, new_node)
+                   
         # right
         right = curr_x + 1
-        if canMove(left, curr_y):
-            new_node = move_robot(right, g_x, curr_y, g_y, curr_node, h_type)
+        if canMove(right, curr_y):
+                  
+            print('right')      
+            
+            new_node = move_robot(right, g_x, curr_y, g_y, curr_node, type_h)
+            
             heapq.heappush(fringe_heap, new_node)
-
+            
+        print('print A* fringe heap:')
+        for i in fringe_heap:
+            print('h: ', i.getH(), 'and cost: ', i.getCost())
+            
     # unreachable goal, return empty
     return []
 
@@ -342,21 +388,27 @@ runnable = True
 while runnable:
     maze_copy = [x[:] for x in maze]
 
+    window = display_maze(maze_copy)
+    
     # set up the heuristic formula
     print('Please choose a heuristic formula: E/M/C')
     print('Euclidean (E), Manhattan (M), Chebyshev (C)')
     type_h = input()
 
-    # do not forget the mainloop
-    window = display_maze(maze_copy)
+    #print('Choose Algorithm: BFS(B)/ A*(A)')
+    #algorithm = input()
+
+    # do not forget the mainloop at end
     window.destroy()
 
     # implementation of A* algor
     path = AStar(s_grid, g_grid, type_h)
+    
+    print(path)
 
     if path:
         # x is visited grid
-        # g is finalized grid to be part of  ret path
+        # g is finalized grid to be part of ret path
         for i in range(len(path) - 1):
 
             curr_location = path[i].getCord()
@@ -365,11 +417,11 @@ while runnable:
         up = path[len(path) - 1].getParent()
         final_path = [up.getCord()]
 
-        while up.getCord() != s_grid
+        while up.getCord() != s_grid:
             up = up.getParent()
             final_path.append(up.getCord())
         
-        final_path = full_path[::-1]
+        final_path = final_path[::-1]
 
         for i in range(len(final_path)):
             curr_location = final_path[i]
@@ -377,7 +429,7 @@ while runnable:
         
         maze_copy[0][0] = 's'
 
-        window2 = display(maze_copy)
+        window2 = display_maze(maze_copy)
         window2.mainloop()
         print('Path to Goal found. Grids traveled: ')
         print(len(final_path))
