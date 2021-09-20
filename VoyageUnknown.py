@@ -6,7 +6,7 @@ from random import randint
 from matplotlib import pyplot as plot
 
 #size of each grid
-grid_size = 30
+grid_size = 10
 
 #dim x dim for maze
 size = int(sys.argv[1])
@@ -182,7 +182,7 @@ def wall_hit(flag1):
 #will check if it is wall, 
 #python already have maze_copy? no need maze to be input?
 
-# 0=True, 1= wall_possible, 2 = out of maze
+# 0=True, 1= wall_possible, 2 = out of maze, 3 = visited, 4= wall
 def inMaze(row, col, wall_list, temp_visited):
 
     #temp_heap = fringe_heap
@@ -447,49 +447,71 @@ def AStar(s, g, type_h, wall_list):
         # use compare_h() to find least H_value
         # also check if still within maze
         
-        # 0 is pass, 2 is out of maze, 1 is wall hit, 3 is visited grid, 4 is wall already visited
         
+        
+        #used to count paths available
+        no_path = 0
+        
+        # 0 is pass, 2 is out of maze, 1 is wall hit, 3 is visited grid, 4 is wall already visited
         #print('CHECKING UP')
         flag1 = inMaze(up, curr_col, wall_list, temp_visited)
         if flag1 != 2:
             up_h = h_function(type_h, up, g_row, curr_col, g_col)
-        if flag1 == 4 or flag1 == 3:
+        if flag1 == 4 or flag1 == 3 or flag1 == 2:
             # wall hit
             up_h = 9999
             #print('wall up_h', up_h)
+        if flag1 != 0:
+            no_path = no_path +1
             
         #print('CHECKING DOWN')
         flag2 = inMaze(down, curr_col, wall_list, temp_visited)
         if flag2 != 2:
             down_h = h_function(type_h, down, g_row, curr_col, g_col)
-        if flag2 == 4 or flag2 == 3:
+        if flag2 == 4 or flag2 == 3 or flag2 == 2:
             # wall hit
             down_h = 9999
             #print('wall down_h: ', down_h)
+        if flag2 != 0:
+            no_path = no_path +1
             
         #print('CHECKING Right')
         flag3 = inMaze(curr_row, right, wall_list, temp_visited)
         if flag3 != 2:
             right_h = h_function(type_h, curr_row, g_row, right, g_col)
-        if flag3 == 4 or flag3 == 3:
+        if flag3 == 4 or flag3 == 3 or flag3 == 2:
             # wall hit
             right_h = 9999
             #print('wall right_h: ', right_h)
+        if flag3 != 0:
+            no_path = no_path +1
             
         #print('CHECKING Left')
         flag4 = inMaze(curr_row, left, wall_list, temp_visited)
         if flag4 != 2:
             #print('False out of maze 4')
             left_h = h_function(type_h, curr_row, g_row, left, g_col)
-        if flag4 == 4 or flag4 == 3:
+        if flag4 == 4 or flag4 == 3 or flag4 == 2:
             # wall hit
             left_h = 9999
             #print('wall left_h: ', left_h)
+        if flag4 != 0:
+            no_path = no_path +1
         
         #no direction left
-        if up_h == 9999 and down_h == 9999 and right_h == 9999 and left_h == 9999:
+        if no_path == 4:
             #print('no direction left')
+            
+            temp_visited.pop()
+            
             temp_visited.append(parent_node.getCord())
+            
+            #see no direction as a wall
+            temp_walls.extend( curr_node.getCord() )
+            
+            print('dead_end: ', temp_walls)
+            print('grid before dead_end: ', temp_visited)
+            
             return fringe_heap, temp_walls, temp_visited
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
@@ -770,58 +792,60 @@ while runnable:
                 if (temp_wall in wall_list) == False:
                     wall_list.append( temp_wall )
                     
+                print('wall_list: ', wall_list)
+                
                 counter = counter + 1
                 
-                if counter >= 9999:
+                if counter >= 99999:
                     runnable= False
                     break
                 
                 
             if runnable == False:
                 passed = 0
-                print('No path to Goal.')
-                continue
+                #print('No path to Goal.')
+                
+            else:
+                final_path = visited_list
 
-            final_path = visited_list
-            
-            #print('final_path length: ', len(final_path))
-            #print('final_path: ', final_path)
-            print("\n")
-            
-            for i in range(len(final_path)):
-                curr_location = final_path[i]
-                # print('curr_location: ', curr_location)
-                maze_copy[curr_location[0]][curr_location[1]] = 'g'
-            
-            # make unvisited maze grids white
-            colored = 0
-            for x in range(len(maze_copy)):
-                for y in range(len(maze_copy[x])):
+                #print('final_path length: ', len(final_path))
+                #print('final_path: ', final_path)
+                print("\n")
 
-                    for i in range(len(final_path)):
-                        curr_location = final_path[i]
-                        if x == curr_location[0] and y == curr_location[1]:
-                            maze_copy[x][y] = 'g'
-                            colored = 1
+                for i in range(len(final_path)):
+                    curr_location = final_path[i]
+                    # print('curr_location: ', curr_location)
+                    maze_copy[curr_location[0]][curr_location[1]] = 'g'
 
-                    if colored == 1:
-                        colored = 0
-                        continue
-                        
-                    if maze_copy[x][y] != 'P':
-                        maze_copy[x][y] = 'w'
+                # make unvisited maze grids white
+                colored = 0
+                for x in range(len(maze_copy)):
+                    for y in range(len(maze_copy[x])):
+
+                        for i in range(len(final_path)):
+                            curr_location = final_path[i]
+                            if x == curr_location[0] and y == curr_location[1]:
+                                maze_copy[x][y] = 'g'
+                                colored = 1
+
+                        if colored == 1:
+                            colored = 0
+                            continue
+
+                        if maze_copy[x][y] != 'P':
+                            maze_copy[x][y] = 'w'
 
 
-            maze_copy[0][0] = 's'
-            maze_copy[size-1][size-1] = 'g'
+                maze_copy[0][0] = 's'
+                maze_copy[size-1][size-1] = 'g'
 
-            window2 = display_maze(maze_copy)
-            window2.mainloop()
-            print('Path to Goal found. Grids traveled: ')
-            print(len(final_path))
-            
-            runnable = False
-            passed = 1
+                window2 = display_maze(maze_copy)
+                window2.mainloop()
+                print('Path to Goal found. Grids traveled: ')
+                print(len(final_path))
+
+                runnable = False
+                passed = 1
 
     elif path and runnable == True:
         # path completed
@@ -880,8 +904,45 @@ while runnable:
         #runnable = False
         print('No path to Goal.')
         print('visited_list: ', visited_list)
+        final_path = visited_list
+            
+        #print('final_path length: ', len(final_path))
+        #print('final_path: ', final_path)
+        print("\n")
+
+        for i in range(len(final_path)):
+            curr_location = final_path[i]
+            # print('curr_location: ', curr_location)
+            maze_copy[curr_location[0]][curr_location[1]] = 'g'
+
+        # make unvisited maze grids white
+        colored = 0
+        for x in range(len(maze_copy)):
+            for y in range(len(maze_copy[x])):
+
+                for i in range(len(final_path)):
+                    curr_location = final_path[i]
+                    if x == curr_location[0] and y == curr_location[1]:
+                        maze_copy[x][y] = 'g'
+                        colored = 1
+
+                if colored == 1:
+                    colored = 0
+                    continue
+
+                if maze_copy[x][y] != 'P':
+                    maze_copy[x][y] = 'w'
+
+
+        maze_copy[0][0] = 's'
+        maze_copy[size-1][size-1] = 'g'
+
         window2 = display_maze(maze_copy)
         window2.mainloop()
+        print('Path to Goal found. Grids traveled: ')
+        print(len(final_path))
+
+
     
 
 
