@@ -426,8 +426,8 @@ def AStar(s, g, type_h, wall_list):
         up = curr_row - 1
         down = curr_row + 1
         
-        right = curr_col - 1
-        left = curr_col + 1
+        right = curr_col + 1
+        left = curr_col - 1
         
         # print(up, down, right,left)
         #return
@@ -438,10 +438,10 @@ def AStar(s, g, type_h, wall_list):
         # change wall_found in canmove, not return false
         # instead change the wall_found
 
-        up_h = 99999
-        down_h = 99999
-        right_h = 99999
-        left_h = 99999
+        up_h = 99
+        down_h = 99
+        right_h = 99
+        left_h = 99
         
         
         # use compare_h() to find least H_value
@@ -509,8 +509,8 @@ def AStar(s, g, type_h, wall_list):
             #see no direction as a wall
             temp_walls.extend( curr_node.getCord() )
             
-            print('dead_end: ', temp_walls)
-            print('grid before dead_end: ', temp_visited)
+            # print('dead_end: ', temp_walls)
+            # print('grid before dead_end: ', temp_visited)
             
             return fringe_heap, temp_walls, temp_visited
         
@@ -590,7 +590,7 @@ def AStar(s, g, type_h, wall_list):
                 #AStar(curr_node.getCord(), g, type_h)
                 return fringe_heap, temp_walls, temp_visited
             
-            new_node = move_robot(curr_row, g_row, curr_col, g_col, curr_node, type_h)
+            new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
             temp_visited.append([curr_row, right])
             
@@ -796,7 +796,7 @@ while runnable:
                 
                 counter = counter + 1
                 
-                if counter >= 99999:
+                if counter >= 999:
                     runnable= False
                     break
                 
