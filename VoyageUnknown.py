@@ -173,7 +173,7 @@ class Node:
 
 def wall_hit(flag1):
     if flag1 == 1:
-        print('wall is hit.')
+        # print('wall is hit.')
         return True
     
     
@@ -191,60 +191,61 @@ def inMaze(row, col, wall_list, temp_visited):
     
     #must be >= 0
     if  row< 0 or col < 0:
-        print(row, col, '<0')
+        #print(row, col, '<0')
         return 2
 
     #must be < size (not <=)
     if row >= size or col >= size:
-        print(row, col, '>= size')
+        #print(row, col, '>= size')
         return 2
 
-    print('wall_list', wall_list)
+    #print('wall_list', wall_list)
     
     
     
     cord = [row,col]
-    print('compare direction to wall list 1: ') 
+    
+    # check if it is wall
+    #print('compare direction to wall list 1: ') 
     if cord == wall_list:
         
-        print('compare direction to wall list 2nd: ', cord, wall_list)
-        print('wall grid found in wall_list, skipping...')
+        #print('compare direction to wall list 2nd: ', cord, wall_list)
+        #print('wall grid found in wall_list, skipping...')
         return 4
     
     
     for i in range(len( wall_list)):
         
-        print(i, 'turn', wall_list)
+        #print(i, 'turn', wall_list)
         
         if cord == wall_list[i]:
         
-            print('compare direction to wall list 2nd: ', cord, wall_list)
-            print('wall grid found in wall_list, skipping...')
+            #print('compare direction to wall list 2nd: ', cord, wall_list)
+            #print('wall grid found in wall_list, skipping...')
             return 4
     
     #check if the path was visited by current iteration
+    
     if cord == temp_visited:
         
-        print('compare direction to wall list 2nd: ', cord, wall_list)
+        #print('compare direction to wall list 2nd: ', cord, wall_list)
         print('wall grid found in wall_list, skipping...')
         return 3
     
     
     for i in range(len( temp_visited)):
         
-        #print(i, 'turn', temp)
-        
         if cord == temp_visited[i]:
         
-            print('This direction already visited in iteration: ', cord, temp_visited)
-            print('grid already visited, skipping...')
+            #print('This direction already visited in iteration: ', cord, temp_visited)
+            #print('grid already visited in iteration, skipping...')
             return 3
     
     
     #check if wall, wall found then stop
     if maze_copy[row][col] == 'P':
         # wall_found = True
-        print('wall found: ', row, ', ', col)
+        # print('wall hit: ', row, ', ', col)
         return 1
         
         #not return False,
@@ -309,7 +310,7 @@ def compare_h(up, down, right, left):
     
     h_order[:-1]
     
-    print('h_order: ', h_order)
+    #print('h_order: ', h_order)
     
     return h_order[0]
 
@@ -366,8 +367,8 @@ def AStar(s, g, type_h, wall_list):
     #heapq.heappush(visited, start_node)
     
     
-    print('start node: ', start_node.getCord())
-    print("\n")
+    #print('start node: ', start_node.getCord())
+    #print("\n")
     
     #return
     
@@ -391,11 +392,11 @@ def AStar(s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        print('temp_visited: ', temp_visited)
+        #print('temp_visited: ', temp_visited)
         
-        print('current node:', curr_node.getCord(), curr_node.getH())
+        #print('current node:', curr_node.getCord(), curr_node.getH())
         
-        print("\n")
+        #print("\n")
         
         #return 
     
@@ -407,7 +408,7 @@ def AStar(s, g, type_h, wall_list):
         curr_row = curr_cord[0]
         curr_col = curr_cord[1]
         
-        print('row: ', curr_row,' col: ', curr_col)
+        #print('row: ', curr_row,' col: ', curr_col)
         
         #return
     
@@ -428,7 +429,7 @@ def AStar(s, g, type_h, wall_list):
         right = curr_col - 1
         left = curr_col + 1
         
-        print(up, down, right,left)
+        # print(up, down, right,left)
         #return
         
         #temp_node = Node(s[0], s[1], Node)
@@ -437,10 +438,10 @@ def AStar(s, g, type_h, wall_list):
         # change wall_found in canmove, not return false
         # instead change the wall_found
 
-        up_h = 9999
-        down_h = 9999
-        right_h = 9999
-        left_h = 9999
+        up_h = 99999
+        down_h = 99999
+        right_h = 99999
+        left_h = 99999
         
         
         # use compare_h() to find least H_value
@@ -448,34 +449,34 @@ def AStar(s, g, type_h, wall_list):
         
         # 0 is pass, 2 is out of maze, 1 is wall hit, 3 is visited grid, 4 is wall already visited
         
-        print('CHECKING UP')
+        #print('CHECKING UP')
         flag1 = inMaze(up, curr_col, wall_list, temp_visited)
         if flag1 != 2:
             up_h = h_function(type_h, up, g_row, curr_col, g_col)
         if flag1 == 4 or flag1 == 3:
             # wall hit
             up_h = 9999
-            print('wall up_h', up_h)
+            #print('wall up_h', up_h)
             
-        print('CHECKING DOWN')
+        #print('CHECKING DOWN')
         flag2 = inMaze(down, curr_col, wall_list, temp_visited)
         if flag2 != 2:
             down_h = h_function(type_h, down, g_row, curr_col, g_col)
         if flag2 == 4 or flag2 == 3:
             # wall hit
             down_h = 9999
-            print('wall down_h: ', down_h)
+            #print('wall down_h: ', down_h)
             
-        print('CHECKING Right')
+        #print('CHECKING Right')
         flag3 = inMaze(curr_row, right, wall_list, temp_visited)
         if flag3 != 2:
             right_h = h_function(type_h, curr_row, g_row, right, g_col)
         if flag3 == 4 or flag3 == 3:
             # wall hit
             right_h = 9999
-            print('wall right_h: ', right_h)
+            #print('wall right_h: ', right_h)
             
-        print('CHECKING Left')
+        #print('CHECKING Left')
         flag4 = inMaze(curr_row, left, wall_list, temp_visited)
         if flag4 != 2:
             #print('False out of maze 4')
@@ -483,7 +484,13 @@ def AStar(s, g, type_h, wall_list):
         if flag4 == 4 or flag4 == 3:
             # wall hit
             left_h = 9999
-            print('wall left_h: ', left_h)
+            #print('wall left_h: ', left_h)
+        
+        #no direction left
+        if up_h == 9999 and down_h == 9999 and right_h == 9999 and left_h == 9999:
+            #print('no direction left')
+            temp_visited.append(parent_node.getCord())
+            return fringe_heap, temp_walls, temp_visited
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
         
@@ -499,11 +506,11 @@ def AStar(s, g, type_h, wall_list):
         if direction_h == up_h:   
             #inMaze(curr_x, up):
             
-            print('up')
+            #print('up')
             
             
             if wall_hit(flag1):
-                print('flag1')
+                #print('flag1')
                 wall_found = True
                 temp_walls.extend( [up, curr_col] )
                                 
@@ -514,7 +521,7 @@ def AStar(s, g, type_h, wall_list):
             
             temp_visited.append([up, curr_col])
             
-            print('new cord: ', new_node.getCord())
+            #print('new cord: ', new_node.getCord())
             
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
@@ -526,10 +533,10 @@ def AStar(s, g, type_h, wall_list):
         
             # inMaze(curr_x, down):
                   
-            print('down')      
+            #print('down')      
             
             if wall_hit(flag2):
-                print('flag2')
+                #print('flag2')
                 wall_found = True
                 temp_walls.extend( [down, curr_col] )
                 
@@ -540,7 +547,7 @@ def AStar(s, g, type_h, wall_list):
             
             temp_visited.append([down, curr_col])
 
-            print('new cord: ', new_node.getCord())
+            #print('new cord: ', new_node.getCord())
             
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
@@ -551,10 +558,10 @@ def AStar(s, g, type_h, wall_list):
             
             # inMaze(right, curr_y)
             
-            print('right')
+            #print('right')
             
             if wall_hit(flag3):
-                print('flag3')
+                #print('flag3')
                 wall_found = True
                 temp_walls.extend( [curr_row, right] )
                 
@@ -565,7 +572,7 @@ def AStar(s, g, type_h, wall_list):
             
             temp_visited.append([curr_row, right])
             
-            print('new cord: ', new_node.getCord())
+            #print('new cord: ', new_node.getCord())
             
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
@@ -576,10 +583,10 @@ def AStar(s, g, type_h, wall_list):
         
             # inMaze(left, curr_y):
                   
-            print('left')
+            #print('left')
             
             if wall_hit(flag4):
-                print('flag4')
+                #print('flag4')
                 wall_found = True
                 temp_walls.extend( [curr_row, left] )
                 
@@ -591,7 +598,7 @@ def AStar(s, g, type_h, wall_list):
             
             temp_visited.append([curr_row, left])
             
-            print('new cord: ', new_node.getCord())
+            #print('new cord: ', new_node.getCord())
 
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
@@ -636,7 +643,6 @@ maze_copy = [x[:] for x in maze]
 # set start coor
 s_grid = [0, 0]
 g_grid = [size-1, size-1 ]
-temp_grid = s_grid
 
 # visited wall coords
 wall_list = []
@@ -652,10 +658,20 @@ while runnable:
     window = display_maze(maze_copy)
     
     # set up the heuristic formula
-    print('Please choose a heuristic formula: E/M/C')
-    print('Euclidean (E), Manhattan (M), Chebyshev (C)')
-    type_h = input()
-
+    
+    right_input = 1
+    
+    while right_input != 0:
+        print('Please choose a heuristic formula: E/M/C')
+        print('Euclidean (E), Manhattan (M), Chebyshev (C)')
+        type_h = input()
+        
+        if type_h == 'E' or type_h == 'M' or type_h == 'C':
+            right_input = 0
+        
+        if right_input != 0:
+            print('Wrong input, try again...')
+        
     #print('Choose Algorithm: BFS(B)/ A*(A)')
     #algorithm = input()
 
@@ -680,17 +696,21 @@ while runnable:
     
     visited_list.extend(temp_visited)
     
-    print('extend once wall_list: ', temp_visited)
-    print(wall_list)
+    #print('extend once wall_list: ', temp_visited)
+    #print(wall_list)
     
-    print('current wall list: ', wall_list)
+    #print('current wall list: ', wall_list)
     
-    print('first visited list: ', visited_list)
+    #print('first visited list: ', visited_list)
     
-    print('path: ', path)
+    #print('path: ', path)
     
-    #if start is beside a wall
+    passed = 0
+    
+    #if first attempt is not compelted
     if path == []:
+        
+        
         if len(wall_list) == 0:
             
             path, temp_wall, temp_visited = AStar(visited_list[-1], g_grid, type_h, wall_list)
@@ -699,14 +719,14 @@ while runnable:
                 if (i in visited_list) == False:
                     visited_list.extend(temp_visited)
 
-            print('temp wall 1: ', temp_wall)
+            #print('temp wall 1: ', temp_wall)
 
             if (temp_wall in wall_list) == False:
 
-                print('extend in while loop 1')
+                #print('extend in while loop 1')
                 wall_list.append( temp_wall )
 
-            print('wall list cords: ', wall_list)
+            print('wall list next to start: ', wall_list)
             
             # goal cords not reached
         
@@ -718,6 +738,7 @@ while runnable:
                 print('No path to Goal.')
                 window2 = display_maze(maze_copy)
                 window2.mainloop()
+                passed = 1
 
                 
         #wall_list.extend( temp_wall )
@@ -727,38 +748,49 @@ while runnable:
             counter = 0
             #print('first last node: ', path[-1].getCord())
             
-            while (visited_list[-1] != g_grid) and counter <= 20:
+            while (visited_list[-1] != g_grid):
                 
-                print('STARTING ASTAR LOOP FROM: ', visited_list[-1])
+                #print('STARTING ASTAR LOOP FROM: ', visited_list[-1])
                 
-                print('LOOPS WALL_LIST: ', wall_list)
+                #print('LOOPS WALL_LIST: ', wall_list)
 
                 path, temp_wall, temp_visited  = AStar(visited_list[-1], g_grid, type_h, wall_list)
                 
                 for i in temp_visited:
+                    #print('cord in temp_visited: ', i)
                     if (i in visited_list) == False:
                         visited_list.extend(temp_visited)
+                    
 
-                print('temp wall 2: ', temp_wall)
+                #print('temp wall 2: ', temp_wall)
 
                
 
-                print('extend in while loop 2')
-                wall_list.append( temp_wall )
+                #print('extend in while loop 2')
+                if (temp_wall in wall_list) == False:
+                    wall_list.append( temp_wall )
                     
                 counter = counter + 1
                 
+                if counter >= 9999:
+                    runnable= False
+                    break
                 
+                
+            if runnable == False:
+                passed = 0
+                print('No path to Goal.')
+                continue
 
             final_path = visited_list
             
-            print('final_path length: ', len(final_path))
-            print('final_path: ', final_path)
+            #print('final_path length: ', len(final_path))
+            #print('final_path: ', final_path)
             print("\n")
             
             for i in range(len(final_path)):
                 curr_location = final_path[i]
-                print('curr_location: ', curr_location)
+                # print('curr_location: ', curr_location)
                 maze_copy[curr_location[0]][curr_location[1]] = 'g'
             
             # make unvisited maze grids white
@@ -775,6 +807,7 @@ while runnable:
                     if colored == 1:
                         colored = 0
                         continue
+                        
                     if maze_copy[x][y] != 'P':
                         maze_copy[x][y] = 'w'
 
@@ -786,11 +819,11 @@ while runnable:
             window2.mainloop()
             print('Path to Goal found. Grids traveled: ')
             print(len(final_path))
-            runnable = False
             
-            continue
+            runnable = False
+            passed = 1
 
-    if path:
+    elif path and runnable == True:
         # path completed
         
         #start from goal grid
@@ -804,14 +837,14 @@ while runnable:
         #reverse the path
         final_path = final_path[::-1]
         
-        print('final_path length: ', len(final_path))
-        print('final_path: ', final_path)
-        print("\n")
+        #print('final_path length: ', len(final_path))
+        #print('final_path: ', final_path)
+        #print("\n")
         
         
         for i in range(len(final_path)):
             curr_location = final_path[i]
-            print('curr_location: ', curr_location)
+            #print('curr_location: ', curr_location)
             maze_copy[curr_location[0]][curr_location[1]] = 'g'
         
         
@@ -841,9 +874,10 @@ while runnable:
         print('Path to Goal found. Grids traveled: ')
         print(len(final_path))
         runnable = False
-
-    else:
-        runnable = False
+        passed=1
+        
+    if runnable == False and passed == 0:
+        #runnable = False
         print('No path to Goal.')
         print('visited_list: ', visited_list)
         window2 = display_maze(maze_copy)
