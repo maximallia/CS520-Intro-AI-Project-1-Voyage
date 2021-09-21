@@ -558,9 +558,7 @@ def AStar(s, g, type_h, wall_list):
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
         
-        # this means we have left the starting node
-        if curr_node.getCord() != s:
-            temp_visited.append(curr_node.getCord())
+        temp_visited.append(curr_node.getCord())
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
