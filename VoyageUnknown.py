@@ -1111,7 +1111,245 @@ def six_AStar(s, g, type_h, wall_list):
 # improved Astar
 #
 #-------------------
+def improve_Astar(s, g, type_h, wall_list):
+    # set goal coor
+    g_row = g[0]
+    g_col = g[1]
 
+    # initialize the heap array
+    fringe_heap = []
+    
+
+    # init the start grid
+    # Node class: __init__(self, row, col, parent)
+    start_node = Node(s[0], s[1], Node)
+    
+    # h_function(h_formula, x_1, x_2, y_1, y_2)
+    distance = h_function(type_h, s[0], g_row, s[1], g_col)
+
+    # set heuristic value to start node
+    start_node.setH(distance)
+
+    # push starter node into heap
+    heapq.heappush(fringe_heap, start_node)
+    #heapq.heappush(visited, start_node)
+    
+    
+    #print('start node: ', start_node.getCord())
+    #print("\n")
+    
+    #return
+    
+    # reset wall_found each new Astar aglor
+    # wall_found = False
+    #starter_node = True
+    
+    starting = 0
+    
+    wall_found = False
+    
+    temp_walls = []
+    
+    temp_visited = []
+
+    while wall_found == False:
+        
+        # start heap with pop smallest node
+        # pop smallest (current) node from heap, to expand
+        curr_node = heapq.heappop(fringe_heap)
+        
+        temp_visited.append(curr_node.getCord())
+
+        # then record current node coordinate
+        curr_cord = curr_node.getCord()
+        curr_row = curr_cord[0]
+        curr_col = curr_cord[1]
+        
+        #print('row: ', curr_row,' col: ', curr_col)
+        
+        #return
+    
+        # parent node
+        parent_node = curr_node.getParent()
+
+        # if not goal, check if moveable in direction
+        # directions: up, down, right, left
+        # if applicable create node with move_robot, push node into heap
+        
+        # direction cords
+        up = curr_row - 1
+        down = curr_row + 1
+        
+        right = curr_col + 1
+        left = curr_col - 1
+        
+        # print(up, down, right,left)
+        #return
+        
+        #temp_node = Node(s[0], s[1], Node)
+        new_node = start_node
+        
+        # change wall_found in canmove, not return false
+        # instead change the wall_found
+        up_h = 99
+        down_h = 99
+        right_h = 99
+        left_h = 99
+
+        #used to count paths available
+        no_path = 0
+        
+        # 0 is pass, 2 is out of maze, 1 is wall hit, 3 is visited grid, 4 is wall already visited
+        #print('CHECKING UP')
+        flag1 = sixMaze(up, curr_col, wall_list, temp_visited)
+        if flag1 != 2:
+            up_h = h_function(type_h, up, g_row, curr_col, g_col)
+        if flag1 == 4 or flag1 == 3 or flag1 == 2:
+            # wall hit
+            up_h = 9999
+            #print('wall up_h', up_h)
+        if flag1 != 0:
+            no_path = no_path +1
+            
+        #print('CHECKING DOWN')
+        flag2 = sixMaze(down, curr_col, wall_list, temp_visited)
+        if flag2 != 2:
+            down_h = h_function(type_h, down, g_row, curr_col, g_col)
+        if flag2 == 4 or flag2 == 3 or flag2 == 2:
+            # wall hit
+            down_h = 9999
+            #print('wall down_h: ', down_h)
+        if flag2 != 0:
+            no_path = no_path +1
+            
+        #print('CHECKING Right')
+        flag3 = sixMaze(curr_row, right, wall_list, temp_visited)
+        if flag3 != 2:
+            right_h = h_function(type_h, curr_row, g_row, right, g_col)
+        if flag3 == 4 or flag3 == 3 or flag3 == 2:
+            # wall hit
+            right_h = 9999
+            #print('wall right_h: ', right_h)
+        if flag3 != 0:
+            no_path = no_path +1
+            
+        #print('CHECKING Left')
+        flag4 = sixMaze(curr_row, left, wall_list, temp_visited)
+        if flag4 != 2:
+            #print('False out of maze 4')
+            left_h = h_function(type_h, curr_row, g_row, left, g_col)
+        if flag4 == 4 or flag4 == 3 or flag4 == 2:
+            # wall hit
+            left_h = 9999
+            #print('wall left_h: ', left_h)
+        if flag4 != 0:
+            no_path = no_path +1
+        
+        #no direction left
+        if no_path == 4:
+            #print('no direction left')
+            
+            temp_visited.pop()
+            
+            if parent_node == []:
+                print( 'Maze Unsolvable.')
+            try:
+                temp_visited.append(parent_node.getCord())
+            except:
+                print('Maze is not Solvable')
+            
+            #see no direction as a wall
+            temp_walls.extend( curr_node.getCord() )
+            
+            # print('dead_end: ', temp_walls)
+            # print('grid before dead_end: ', temp_visited)
+            
+            return fringe_heap, temp_walls, temp_visited
+        
+        direction_h = compare_h(up_h, down_h, right_h, left_h)
+        
+        
+        # use that H_ value to move robot
+        # if wall hit, then rerun Astar
+
+        
+        # up =1, down= 2, right = 3, left = 4
+   
+        # up
+        #if direction_h == 1:
+        if direction_h == up_h:   
+            #inMaze(curr_x, up):
+            
+            
+            new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
+            
+            temp_visited.append([up, curr_col])
+            
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            
+            
+            
+        # down
+        elif direction_h == down_h:
+        
+            # inMaze(curr_x, down):
+
+            new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
+            
+            temp_visited.append([down, curr_col])
+
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            
+        
+        # right
+        elif direction_h == right_h:
+            
+            
+            new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
+            
+            temp_visited.append([curr_row, right])
+            
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+
+       
+        # left
+        elif direction_h == left_h:
+        
+            
+            new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
+            
+            temp_visited.append([curr_row, left])
+            
+            #print('new cord: ', new_node.getCord())
+
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+        
+            
+        
+        if new_node.getCord() == g:
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            #print('grid before goal cord: ', new_node.getCord())
+            print('goal reached')
+            return fringe_heap, temp_walls, temp_visited
+            break
+            
+        if wall_found == True:
+            print('wall coordinates: ', temp_walls)
+            break
+        
+    # unreachable goal, return empty
+    return fringe_heap, temp_walls, temp_visited
 
 #-------------------
 # Astar End
@@ -1180,7 +1418,7 @@ while runnable:
     type_s = 'C'   
     while right_input != 0:
         print('Please choose a type Astar')
-        print('Astar(A), Improved Astar(I), Prob 6 (S)')
+        print('Astar(A), Improved Astar(I), No Sight (S)')
         type_s = input()
         
         if type_s == 'A' or type_s == 'I' or type_s == 'S':
@@ -1189,7 +1427,7 @@ while runnable:
         if right_input != 0:
             print('Wrong input, try again...')
     
-    if type_s == 'A':
+    if type_s == 'S':
         
         time_a = time.time()
         
@@ -1466,7 +1704,7 @@ while runnable:
         print('no done yet')
         runnable = False
     
-    elif type_s == 'S':
+    elif type_s == 'A':
         
         time_a = time.time()
         
