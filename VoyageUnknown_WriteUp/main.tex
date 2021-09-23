@@ -1,0 +1,98 @@
+\documentclass{homeworg}
+\usepackage{algorithm} 
+\usepackage{algpseudocode} 
+
+\title{CS520 Project 1: Voyage Unknown}
+\author{Daniel Ying dty16 Sec 198:520:01, Zachary Tarman zpt2}
+
+\usepackage{xcolor}
+\usepackage{proof}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Submitter}: 
+
+\textbf{Honor Code}:
+
+I abide to the rules laid in the Project 1: Voyage Unknown description and I have not used anyone else’s work for the project, and my work is only my own and my group’s.
+
+\hrulefill
+
+I acknowledge and accept the Honor Code and rules of Project 1.
+
+\textbf{Signed}: Daniel Ying dty16, Zachary Tarman zpt2
+
+\hrulefill
+
+\textbf{Workload}: 
+
+Daniel Ying: Coded the Program for Voyage Unknown. Formatted the report in latex code.
+
+Zachary Tarman: Authored the report and collected corresponding data.
+
+Together: Brainstormed the Algorithm of Repeated Forward A*.
+\vspace{.5cm}
+
+\newpage
+\exercise
+Why does re-planning only occur when blocks are discovered on the current path? Why not whenever knowledge of the environment is updated?
+
+ANSWER:
+
+I think a fairly reasonable explanation is that the agent originally assumes that all cells are unblocked (the "freespace assumption" in the write-up). 
+
+Granted, when the agent makes a planned path in the first part of an iteration and then starts to follow that path in the execution phase while discovering cells' status along the way, if the cells are unblocked, it does technically gather information about the entire environment. However, this is not information that requires the agent to change its planned path since unblocked status was already its assumption. 
+
+On the contrary, if it discovers a blocked cell in its path, this will necessarily require that we change our current planned path. We cannot continue, and we must replan from our current state.
+
+
+\newpage
+\exercise*
+Will the agent ever get stuck in a solvable maze? Why or why not?
+
+Answer:
+
+No, the agent will not get stuck in a solvable maze. 
+
+Though it may be a long time before a successful solution is reached in some cases (i.e. if the agent gets stuck in multiple deadends and has to backtrack), if there is some path from the start to the goal, the replanning process will allow the agent to continually revise its path to the target with each new discovery of a block in its path. For example, if the agent hits a blocked cell, the execution phase of the current iteration is halted, and it will replan its route. With the new knowledge of the block in its path, it will know to avoid that block when planning its future path. 
+
+As long as there is some path from start to goal, the agent will discover it by trial and error at the very least (if not also good planning via heuristics or some other method to quicken the search). More generally, most search algorithms such as BFS and DFS would also succeed in not getting stuck because the agent will keep searching unblocked edges until a goal is reached, and only after the entire fringe is exhausted would the algorithms declare that the maze is unsolvable.
+
+
+\newpage
+\exercise*
+Once the agent reaches the target, consider re-solving the now discovered gridworld for the shortest path (eliminating any backtracking that may have occurred). Will this be an optimal path in the complete gridworld? Argue for, or give a counter example.
+
+Answer:
+
+No, the shortest path that the agent has discovered will not necessarily be the most optimal path in the complete gridworld. In other words, it might be, but it cannot be assumed.
+
+The key sentence here from the logic cycle the agent follows is, “Based on its current knowledge of the environment, it plans a path from its 'current position' to the goal”. There may very well be a case such that the shortest path in the discovered gridworld is also the optimal path of the complete gridworld, but in general, because replanning means trying to determine what the next best path is from the “current position” as opposed to looking at all discovered cells and deciding the best place to restart the search, this will not always be the case.
+
+The argument above can be seen in the maze run figures 1 and 2, located below. Since the agent encounters many blocked cells in its path, it's forced to replan multiple times. During these replanning steps, it's put into a position where it must make the best decision from where it is currently, but it doesn't know what path on the virtual "fork in the road" to actually take since it has no knowledge of the nebulous cloud ahead, and once it chooses one path, it may be stuck on a less optimal path as compared to the complete gridworld.
+
+
+\newpage
+\begin{figure}[h]
+  	\centering
+  	\includegraphics*[scale=0.3]{Astar1.jpeg}
+	\caption{Astar Path Run (Yellow: Path found by agent, Red: shortest path with info found by agent).}
+	\label{fig:example}
+\end{figure}
+ 
+\begin{figure}[h]
+  	\centering
+  	\includegraphics*[scale=0.3]{Optimal1.jpeg}
+	\caption{Optimal Path Run (Blue: agent knows location of walls).}
+	\label{fig:example}
+\end{figure}
+ 
+\newpage
+\exercise*
+Solvability A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on p? Given dim = 101, how does solvability depend on p? For a range of p values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold p0 where for p < p0, most mazes are solvable, but p > p0, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
+
+
+
+\end{document}
