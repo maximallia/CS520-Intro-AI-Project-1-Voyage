@@ -903,8 +903,8 @@ def six_AStar(s, g, type_h, wall_list):
     
     temp_visited = []
 
-    while wall_found == False:
-        
+    #while wall_found == False:
+    while fringe_heap:
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
@@ -1095,9 +1095,9 @@ def six_AStar(s, g, type_h, wall_list):
             return fringe_heap, temp_walls, temp_visited
             break
             
-        if wall_found == True:
-            print('wall coordinates: ', temp_walls)
-            break
+        #if wall_found == True:
+         #   print('wall coordinates: ', temp_walls)
+          #  break
         
     # unreachable goal, return empty
     return fringe_heap, temp_walls, temp_visited
@@ -1246,6 +1246,7 @@ def improve_Astar(s, g, type_h, wall_list):
             no_path = no_path +1
         
         #no direction left
+        # dead end improvement
         if no_path == 4:
             #print('no direction left')
             
@@ -1522,6 +1523,8 @@ while runnable:
 
                     else:
                         # maze is runnable
+                        
+                        total_time = time.time() - time_a
 
                         final_path = visited_list
 
@@ -1529,6 +1532,8 @@ while runnable:
                         #print('final_path: ', final_path)
                         #print("\n")
 
+                        #draw out the map, DO NOT INCLUDE MAP DRAWING IN TIME
+                        
                         for i in range(len(final_path)):
                             curr_location = final_path[i]
                             # print('curr_location: ', curr_location)
@@ -1558,7 +1563,7 @@ while runnable:
 
                         print('Path to Goal found. Grids traveled: ')
                         print(len(final_path))
-                        print('Repeat Forward Astar: %s seconds used'% (time.time() - time_a))
+                        print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                         # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                         path_time = time.time()
@@ -1586,7 +1591,7 @@ while runnable:
                         
                         print(len(best_path))
                         
-                        print('Shortest path in Astar: %s seconds used'% (time.time() - time_a))
+                        print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
                         window2 = display_maze(maze_copy)
                         window2.mainloop()
@@ -1800,7 +1805,11 @@ while runnable:
 
                     else:
                         # maze is runnable
-
+                        # algorithm is complete, record time!
+                        
+                        total_time = time.time() - time_a
+                        
+                        # draw map
                         final_path = visited_list
 
                         #print('final_path length: ', len(final_path))
@@ -1836,7 +1845,7 @@ while runnable:
 
                         print('Path to Goal found. Grids traveled: ')
                         print(len(final_path))
-                        print('Repeat Forward Astar: %s seconds used'% (time.time() - time_a))
+                        print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                         # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                         path_time = time.time()
@@ -1864,14 +1873,15 @@ while runnable:
                         
                         print(len(best_path))
                         
-                        print('Shortest path in Astar: %s seconds used'% (time.time() - time_a))
+                        print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
                         window2 = display_maze(maze_copy)
                         window2.mainloop()
 
                         # NOW FOR BEST PATH IN MAZE, WE KNOW ALL WALL LOCATIONS
+                        shortest_time = time.time()
                         shortest_path = all_Astar(s_grid, g_grid, type_h)
-
+                        
                         #print('shortest_path: ', shortest_path)
 
                         if shortest_path:
@@ -1905,6 +1915,7 @@ while runnable:
 
                             print('Shortest Path in Maze found. Grids traveled: ')
                             print(len(shortest))
+                            print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
                             
                             window3 = display_maze(all_maze_copy)
