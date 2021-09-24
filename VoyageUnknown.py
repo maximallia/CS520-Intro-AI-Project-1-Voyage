@@ -202,11 +202,11 @@ def inMaze(row, col, wall_list, temp_visited):
         return 4
     
     
-    for i in range(len( wall_list)):
-        
-        if cord == wall_list[i]:
+    #for i in range(len( wall_list)):
+    if [row, col] in wall_list:   
+    #    if col == wall_list[row]:
 
-            return 4
+        return 4
     
     
     #check if the path was visited by current iteration
@@ -217,11 +217,11 @@ def inMaze(row, col, wall_list, temp_visited):
         print('wall grid found in wall_list, skipping...')
         return 3
 
-    for i in range(len( temp_visited)):
+    #for i in range(len( temp_visited)):
+    if [row,col] in temp_visited:
+        #if col == temp_visited[row]:
         
-        if cord == temp_visited[i]:
-        
-            return 3
+        return 3
     
     
     #check if wall, wall found then stop
@@ -278,7 +278,7 @@ def sixMaze(row, col, temp_visited, temp_walls):
         return 2
 
     
-    cord = [row,col]
+    #cord = [row,col]
     
     # check if it is wall
     #print('compare direction to wall list 1: ') 
@@ -286,11 +286,11 @@ def sixMaze(row, col, temp_visited, temp_walls):
         return 4
     
     
-    for i in range(len( wall_list)):
+    #for i in range(len( wall_list)):
         
-        if cord == wall_list[i]:
+    if [row,col] in wall_list:
 
-            return 4
+        return 4
     
     
     #check if the path was visited by current iteration
@@ -301,11 +301,11 @@ def sixMaze(row, col, temp_visited, temp_walls):
         print('wall grid found in wall_list, skipping...')
         return 3
 
-    for i in range(len( temp_visited)):
+    #for i in range(len( temp_visited)):
         
-        if cord == temp_visited[i]:
+    if [row,col] in temp_visited:
         
-            return 3
+        return 3
     
     
     #check if wall, wall found then stop
@@ -1251,8 +1251,13 @@ def improve_Astar(s, g, type_h, wall_list):
             
             temp_visited.pop()
             
+            # this mean the start_node is already no directions
             if parent_node == []:
                 print( 'Maze Unsolvable.')
+                
+            
+            # we will iteration out of the hall
+            
             try:
                 temp_visited.append(parent_node.getCord())
             except:
@@ -1704,6 +1709,7 @@ while runnable:
         print('no done yet')
         runnable = False
     
+    
     elif type_s == 'A':
         
         time_a = time.time()
@@ -1961,6 +1967,7 @@ while runnable:
                 #except:
                  #   print('Unsolvable, ending Maze Run.')
 
+                    
         if path and runnable == True:
             # path completed
 
