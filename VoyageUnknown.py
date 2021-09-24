@@ -262,7 +262,7 @@ def canMove(row, col):
 
 # iterating out of hall, visited grids passed through
 # return T/F, not flags
-def improve_move(row, col, temp_walls):
+def improve_move(row, col, dead_list):
     
     # out of border
     if row<0 or col<0:
@@ -271,11 +271,13 @@ def improve_move(row, col, temp_walls):
     # out of border
     if row>=size or col >=size:
         return False
-    
+
     # a wall
-    if row in temp_walls:
-        if col in temp_walls[row]:
-            return False
+    if maze_copy[row][col] == 'P':
+        return False
+    
+    if [row, col] in dead_list:
+        return False
     
     return True
 
@@ -1025,7 +1027,7 @@ def six_AStar(s, g, type_h, wall_list):
 
         #no direction left
         if no_path == 4:
-            print('no direction left')
+            #print('no direction left')
             #print('curr_cord: ', curr_node.getCord())
             
             # do not need this, only for no-sight
@@ -1034,16 +1036,16 @@ def six_AStar(s, g, type_h, wall_list):
             if parent_node == []:
                 print( 'Maze Unsolvable.')
             try:
-                print('previous node: ', temp_visited[-1])
+                #print('previous node: ', temp_visited[-1])
                 temp_visited.append(parent_node.getCord())
-                print('last node: ', temp_visited[-1])
+                #print('last node: ', temp_visited[-1])
             except:
                 print('Maze is not Solvable')
             
             #see no direction as a wall
             #if temp_walls != []:
             temp_walls.append( curr_node.getCord() )
-            print('first new_wall: ', temp_walls)
+            #print('first new_wall: ', temp_walls)
 
             
             return fringe_heap, temp_walls, temp_visited
@@ -1156,10 +1158,11 @@ def six_AStar(s, g, type_h, wall_list):
 #
 
 
+
 # improved Astar
 #
 #-------------------
-def improve_Astar(s, g, type_h, wall_list):
+def improve_AStar(s, g, type_h, wall_list):
     # set goal coor
     g_row = g[0]
     g_col = g[1]
@@ -1182,26 +1185,14 @@ def improve_Astar(s, g, type_h, wall_list):
     heapq.heappush(fringe_heap, start_node)
     #heapq.heappush(visited, start_node)
     
-    
-    #print('start node: ', start_node.getCord())
-    #print("\n")
-    
-    #return
-    
-    # reset wall_found each new Astar aglor
-    # wall_found = False
-    #starter_node = True
-    
-    starting = 0
-    
-    wall_found = False
+    wall_met = False
     
     temp_walls = []
     
     temp_visited = []
 
-    while fringe_heap:
-        
+    #while wall_found == False:
+    while wall_met == False:
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
@@ -1247,105 +1238,124 @@ def improve_Astar(s, g, type_h, wall_list):
         #used to count paths available
         no_path = 0
         
-        # 0 is pass, 2 is out of maze, 1 is wall hit, 3 is visited grid, 4 is wall already visited
+        # 0 is pass, 2 is out of maze, 1 is wall hit (not applied), 3 is visited grid, 4 is wall already visited
         #print('CHECKING UP')
-        flag1 = sixMaze(up, curr_col, wall_list, temp_visited)
+        flag1 = sixMaze(up, curr_col, wall_list, temp_walls, temp_visited)
         if flag1 != 2:
             up_h = h_function(type_h, up, g_row, curr_col, g_col)
+        
+        # we do not wait for the agent to hit the wall
+        # due to the field of sight, we can extend the wall to temp_walls
+        if flag1 == 1:
+            temp_walls.append([up, curr_col])
+            #flag1 = 4
+        
         if flag1 == 4 or flag1 == 3 or flag1 == 2:
             # wall hit
             up_h = 9999
-            #print('wall up_h', up_h)
-        if flag1 != 0:
-            no_path = no_path +1
+            no_path = no_path+1
+            
             
         #print('CHECKING DOWN')
-        flag2 = sixMaze(down, curr_col, wall_list, temp_visited)
+        flag2 = sixMaze(down, curr_col, wall_list, temp_walls, temp_visited)
         if flag2 != 2:
             down_h = h_function(type_h, down, g_row, curr_col, g_col)
+            
+        if flag2 == 1:
+            temp_walls.append([down, curr_col])
+            #flag2 =4 
+                
         if flag2 == 4 or flag2 == 3 or flag2 == 2:
             # wall hit
             down_h = 9999
-            #print('wall down_h: ', down_h)
-        if flag2 != 0:
-            no_path = no_path +1
+            no_path = no_path + 1
+            
+            
             
         #print('CHECKING Right')
-        flag3 = sixMaze(curr_row, right, wall_list, temp_visited)
+        flag3 = sixMaze(curr_row, right, wall_list, temp_walls, temp_visited)
         if flag3 != 2:
             right_h = h_function(type_h, curr_row, g_row, right, g_col)
+        if flag3 == 1:
+            temp_walls.append([curr_row, right])
+            #flag3 = 4
+                
         if flag3 == 4 or flag3 == 3 or flag3 == 2:
             # wall hit
             right_h = 9999
-            #print('wall right_h: ', right_h)
-        if flag3 != 0:
             no_path = no_path +1
             
+            
         #print('CHECKING Left')
-        flag4 = sixMaze(curr_row, left, wall_list, temp_visited)
+        flag4 = sixMaze(curr_row, left, wall_list, temp_walls, temp_visited)
         if flag4 != 2:
-            #print('False out of maze 4')
             left_h = h_function(type_h, curr_row, g_row, left, g_col)
+            
+        if flag4 == 1:
+            temp_walls.append([curr_row, left])
+                
         if flag4 == 4 or flag4 == 3 or flag4 == 2:
             # wall hit
             left_h = 9999
-            #print('wall left_h: ', left_h)
-        if flag4 != 0:
             no_path = no_path +1
         
-        
-        # no direction left (dead-end)
-        # dead end improvement
+
+        #no direction left
         if no_path == 4:
-            
-            # this mean the start_node is already no directions
-            if parent_node == []:
-                print( 'Maze Unsolvable.')
-                return fringe_heap, temp_walls, temp_visited
-                
+            #print('no direction left')
             
             # we will iteration out of the hall
             # the hallway would have three direction unavailable
             # for each move back, make previous grid a wall
             
-            
+            # blockers include:
             # side with previous
-            # block
+            # wall block
             # border
-            # use up,down,right,left
+            
+            # use up,down,right,left to iterate
             
             dead_cord = curr_node.getCord()
             
             # 1=up, 2= down, 3=right, 4= left, 5= more than one avail
             moveable = 0
+            dead_list = [[dead_cord]]
+            
             while  moveable != 5:
                 
-                print('checking hall passed')
+                #print('checking hall entered')
+                #print('dead_cord: ', dead_cord)
+                
+                #print('temp_walls: ', temp_walls)
                 
                 dead_row = dead_cord[0]
                 dead_col = dead_cord[1]
                 
                 moveable = 0
             
-                dead_up = dead_row + 1
-                dead_down = dead_row - 1
-                dead_down = dead_col + 1
+                #dead_list = [[dead_row, dead_col]]
+            
+            
+                dead_up = dead_row - 1
+                dead_down = dead_row + 1
+                
+                dead_right = dead_col + 1
                 dead_left = dead_col - 1
                 
-                if improve_move(dead_up, dead_col):
+                if improve_move(dead_up, dead_col, dead_list):
                     moveable = 1
                     
-                if improve_move(dead_down, dead_col):
+                if improve_move(dead_down, dead_col, dead_list):
                     if moveable != 0:
                         moveable = 5
                     else:
                         moveable = 2
-                if improve_move(dead_row, dead_right):
+                if improve_move(dead_row, dead_right, dead_list):
                     if moveable != 0:
                         moveable = 5
                     else:
                         moveable = 3
-                if improve_move(dead_row, dead_left):
+                if improve_move(dead_row, dead_left, dead_list):
                     if moveable != 0:
                         moveable = 5
                     else:
@@ -1353,62 +1363,68 @@ def improve_Astar(s, g, type_h, wall_list):
                 
                 # no direction available
                 if moveable == 0:
-                    print('stuck with no path')
+                    #print('stuck with no path')
                     return fringe_heap, temp_walls, temp_visited
                 
                 # out of hall, stop while loop and return
                 elif moveable == 5:
-                    print('out of hallway')
+                    #print('out of hallway')
+                    
                     return fringe_heap, temp_walls, temp_visited
                 
                 #still in hall
                 # extend wall
                 else:
                     if moveable == 1:
-                        temp_walls.extend([dead_row, dead_col])
+                        temp_walls.append([dead_row, dead_col])
                         
-                        dead_row = up
-                        temp_visited.extend([dead_row, dead_col])
+                        dead_list.append([dead_row, dead_col])
+                        temp_visited.append([dead_row, dead_col])
                         
+                        dead_cord = [dead_up, dead_col]
+                    
                     elif moveable == 2:
-                        temp_walls.extend([dead_row, dead_col])
+                        temp_walls.append([dead_row, dead_col])
                         
-                        dead_row = down
-                        temp_visited.extend([dead_row, dead_col])
+                        dead_list.append([dead_row, dead_col])
+                        temp_visited.append([dead_row, dead_col])
+
+                        dead_cord = [dead_down, dead_col]
                         
                     elif moveable == 3:
-                        temp_walls.extend([dead_row, dead_col])
+                        temp_walls.append([dead_row, dead_col])
                         
-                        dead_col = right
-                        temp_visited.extend([dead_row, dead_col])
+                        dead_list.append([dead_row, dead_col])
+                        temp_visited.append([dead_row, dead_col])
+                        
+                        dead_cord = [dead_row, dead_right]
+                        
                     elif moveable == 4:
-                        temp_walls.extend([dead_row, dead_col])
+                        temp_walls.append([dead_row, dead_col])
+       
+                        dead_list.append([dead_row, dead_col])
+                        temp_visited.append([dead_row, dead_col])
                         
-                        dead_col = left
-                        temp_visited.extend([dead_row, dead_col])
+                        dead_cord = [dead_row, dead_left]
                     
-            #see no direction as a wall
-            # temp_walls.extend( curr_node.getCord() )
-            
-            # print('dead_end: ', temp_walls)
-            # print('grid before dead_end: ', temp_visited)
-            
-            return fringe_heap, temp_walls, temp_visited
+                    #print('temp_walls after move: ', temp_walls)
+               
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
         
         
-        # use that H_ value to move robot
-        # if wall hit, then rerun Astar
-
-        
-        # up =1, down= 2, right = 3, left = 4
-   
+        # if wall blocking path, re-plan
         # up
         #if direction_h == 1:
         if direction_h == up_h:   
             #inMaze(curr_x, up):
             
+            # hit the block on current iteration
+            if wall_hit(flag1):
+                
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
             
             new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
             
@@ -1425,6 +1441,12 @@ def improve_Astar(s, g, type_h, wall_list):
         elif direction_h == down_h:
         
             # inMaze(curr_x, down):
+            
+            if wall_hit(flag2):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
@@ -1439,6 +1461,11 @@ def improve_Astar(s, g, type_h, wall_list):
         # right
         elif direction_h == right_h:
             
+            if wall_hit(flag3):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
@@ -1453,6 +1480,11 @@ def improve_Astar(s, g, type_h, wall_list):
         # left
         elif direction_h == left_h:
         
+            if wall_hit(flag4):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
@@ -1473,7 +1505,7 @@ def improve_Astar(s, g, type_h, wall_list):
             return fringe_heap, temp_walls, temp_visited
             break
             
-        if wall_found == True:
+        if wall_met == True:
             print('wall coordinates: ', temp_walls)
             break
         
@@ -1842,9 +1874,9 @@ while runnable:
         temp_visited = []
         visited_list= []
 
-        path, temp_wall, temp_visited = improve_AStar(s_grid, g_grid, type_h, wall_list)
+        path, temp_wall, temp_visited = six_AStar(s_grid, g_grid, type_h, wall_list)
 
-        wall_list.append( temp_wall )
+        wall_list.extend( temp_wall )
 
         visited_list.extend(temp_visited)
 
@@ -1862,14 +1894,14 @@ while runnable:
                 if (i in visited_list) == False:
                     visited_list.extend(temp_visited)
 
-                print('temp wall 1: ', temp_wall)
+                #print('temp wall 1: ', temp_wall)
 
                 #if (temp_wall in wall_list) == False:
 
                     #print('extend in while loop 1')
-                wall_list.append( temp_wall )
+                wall_list.extend( temp_wall )
 
-                #print('wall list next to start: ', wall_list)
+                #print('wall list after start grid: ', wall_list)
 
                 # goal cords not reached
 
@@ -1905,9 +1937,9 @@ while runnable:
 
                         #print('extend in while loop 2')
                         
-                        wall_list.append( temp_wall )
+                        wall_list.extend( temp_wall )
 
-                        #print('wall_list: ', wall_list)
+                        #print('after first iteration wall_list: ', wall_list)
 
                         counter = counter + 1
 
@@ -2043,6 +2075,7 @@ while runnable:
 
             except:
                 print('Unsolvable, ending Maze Run.')
+                runnable = False
 
 
                 
@@ -2159,6 +2192,25 @@ while runnable:
             print('visited_list: ', visited_list)
             
             print('Path to Goal failed. Grids traveled: ')
+            for x in range(len(maze_copy)):
+                for y in range(len(maze_copy[x])):
+
+                    for i in range(len(visited_list)):
+                        curr_location = visited_list[i]
+                        if x == curr_location[0] and y == curr_location[1]:
+                            maze_copy[x][y] = 'g'
+                            colored = 1
+
+                    if colored == 1:
+                        colored = 0
+                        continue
+
+                    if maze_copy[x][y] != 'P':
+                        maze_copy[x][y] = 'w'
+
+
+            window2 = display_maze(maze_copy)
+            window2.mainloop()
             print(len(final_path))
         
     
@@ -2221,9 +2273,9 @@ while runnable:
 
                     while (visited_list[-1] != g_grid):
 
-                        print('STARTING ASTAR LOOP FROM: ', visited_list[-1])
+                        #print('STARTING ASTAR LOOP FROM: ', visited_list[-1])
 
-                        print('LOOPS WALL_LIST: ', wall_list)
+                        #print('LOOPS WALL_LIST: ', wall_list)
 
                         path, temp_wall, temp_visited  = six_AStar(visited_list[-1], g_grid, type_h, wall_list)
 
