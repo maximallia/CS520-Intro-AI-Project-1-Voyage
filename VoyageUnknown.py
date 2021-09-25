@@ -1157,7 +1157,280 @@ def six_AStar(s, g, type_h, wall_list):
 #-------------------
 #
 
+#Weighted Astar
+#-----------------------
+def w_AStar(s, g, type_h, wall_list):
+    
+    w = 1.5
 
+    # set goal coor
+    g_row = g[0]
+    g_col = g[1]
+
+    # initialize the heap array
+    fringe_heap = []
+    
+
+    # init the start grid
+    # Node class: __init__(self, row, col, parent)
+    start_node = Node(s[0], s[1], Node)
+    
+    # h_function(h_formula, x_1, x_2, y_1, y_2)
+    distance = h_function(type_h, s[0], g_row, s[1], g_col)
+
+    # set heuristic value to start node
+    start_node.setH(distance)
+
+    # push starter node into heap
+    heapq.heappush(fringe_heap, start_node)
+    #heapq.heappush(visited, start_node)
+    
+    wall_met = False
+    
+    temp_walls = []
+    
+    temp_visited = []
+
+    #while wall_found == False:
+    while wall_met == False:
+        # start heap with pop smallest node
+        # pop smallest (current) node from heap, to expand
+        curr_node = heapq.heappop(fringe_heap)
+        
+        temp_visited.append(curr_node.getCord())
+
+        # then record current node coordinate
+        curr_cord = curr_node.getCord()
+        curr_row = curr_cord[0]
+        curr_col = curr_cord[1]
+        
+        #print('row: ', curr_row,' col: ', curr_col)
+        
+        #return
+    
+        # parent node
+        parent_node = curr_node.getParent()
+
+        # if not goal, check if moveable in direction
+        # directions: up, down, right, left
+        # if applicable create node with move_robot, push node into heap
+        
+        # direction cords
+        up = curr_row - 1
+        down = curr_row + 1
+        
+        right = curr_col + 1
+        left = curr_col - 1
+        
+        # print(up, down, right,left)
+        #return
+        
+        #temp_node = Node(s[0], s[1], Node)
+        new_node = start_node
+        
+        # change wall_found in canmove, not return false
+        # instead change the wall_found
+        up_h = 99
+        down_h = 99
+        right_h = 99
+        left_h = 99
+
+        #used to count paths available
+        no_path = 0
+        
+        # 0 is pass, 2 is out of maze, 1 is wall hit (not applied), 3 is visited grid, 4 is wall already visited
+        #print('CHECKING UP')
+        flag1 = sixMaze(up, curr_col, wall_list, temp_walls, temp_visited)
+        if flag1 != 2:
+            up_h = w * h_function(type_h, up, g_row, curr_col, g_col)
+        
+        # we do not wait for the agent to hit the wall
+        # due to the field of sight, we can extend the wall to temp_walls
+        if flag1 == 1:
+            temp_walls.append([up, curr_col])
+            #flag1 = 4
+        
+        if flag1 == 4 or flag1 == 3 or flag1 == 2:
+            # wall hit
+            up_h = 9999
+            no_path = no_path+1
+            
+            
+        #print('CHECKING DOWN')
+        flag2 = sixMaze(down, curr_col, wall_list, temp_walls, temp_visited)
+        if flag2 != 2:
+            down_h = w * h_function(type_h, down, g_row, curr_col, g_col)
+            
+        if flag2 == 1:
+            temp_walls.append([down, curr_col])
+            #flag2 =4 
+                
+        if flag2 == 4 or flag2 == 3 or flag2 == 2:
+            # wall hit
+            down_h = 9999
+            no_path = no_path + 1
+            
+            
+            
+        #print('CHECKING Right')
+        flag3 = sixMaze(curr_row, right, wall_list, temp_walls, temp_visited)
+        if flag3 != 2:
+            right_h = w * h_function(type_h, curr_row, g_row, right, g_col)
+        if flag3 == 1:
+            temp_walls.append([curr_row, right])
+            #flag3 = 4
+                
+        if flag3 == 4 or flag3 == 3 or flag3 == 2:
+            # wall hit
+            right_h = 9999
+            no_path = no_path +1
+            
+            
+        #print('CHECKING Left')
+        flag4 = sixMaze(curr_row, left, wall_list, temp_walls, temp_visited)
+        if flag4 != 2:
+            left_h = w * h_function(type_h, curr_row, g_row, left, g_col)
+            
+        if flag4 == 1:
+            temp_walls.append([curr_row, left])
+                
+        if flag4 == 4 or flag4 == 3 or flag4 == 2:
+            # wall hit
+            left_h = 9999
+            no_path = no_path +1
+        
+
+        #no direction left
+        if no_path == 4:
+            #print('no direction left')
+            #print('curr_cord: ', curr_node.getCord())
+            
+            # do not need this, only for no-sight
+            #temp_visited.pop()
+            
+            if parent_node == []:
+                print( 'Maze Unsolvable.')
+            try:
+                #print('previous node: ', temp_visited[-1])
+                temp_visited.append(parent_node.getCord())
+                #print('last node: ', temp_visited[-1])
+            except:
+                print('Maze is not Solvable')
+            
+            #see no direction as a wall
+            #if temp_walls != []:
+            temp_walls.append( curr_node.getCord() )
+            #print('first new_wall: ', temp_walls)
+
+            
+            return fringe_heap, temp_walls, temp_visited
+        
+        direction_h = compare_h(up_h, down_h, right_h, left_h)
+        
+        
+        # if wall blocking path, re-plan
+        # up
+        #if direction_h == 1:
+        if direction_h == up_h:   
+            #inMaze(curr_x, up):
+            
+            # hit the block on current iteration
+            if wall_hit(flag1):
+                
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
+            
+            new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
+            
+            temp_visited.append([up, curr_col])
+            
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            
+            
+            
+        # down
+        elif direction_h == down_h:
+        
+            # inMaze(curr_x, down):
+            
+            if wall_hit(flag2):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
+
+            new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
+            
+            temp_visited.append([down, curr_col])
+
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            
+        
+        # right
+        elif direction_h == right_h:
+            
+            if wall_hit(flag3):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
+            
+            new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
+            
+            temp_visited.append([curr_row, right])
+            
+            #print('new cord: ', new_node.getCord())
+            
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+
+       
+        # left
+        elif direction_h == left_h:
+        
+            if wall_hit(flag4):
+
+                wall_met = True
+
+                return fringe_heap, temp_walls, temp_visited
+            
+            new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
+            
+            temp_visited.append([curr_row, left])
+            
+            #print('new cord: ', new_node.getCord())
+
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+        
+            
+        
+        if new_node.getCord() == g:
+            heapq.heappush(fringe_heap, new_node)
+            #heapq.heappush(visited, new_node)
+            #print('grid before goal cord: ', new_node.getCord())
+            print('goal reached')
+            return fringe_heap, temp_walls, temp_visited
+            break
+            
+        if wall_met == True:
+            print('wall coordinates: ', temp_walls)
+            break
+        
+    # unreachable goal, return empty
+    return fringe_heap, temp_walls, temp_visited
+
+
+
+#-----------------------
+#
 
 # improved Astar
 #
@@ -1579,10 +1852,10 @@ while runnable:
     type_s = 'C'   
     while right_input != 0:
         print('Please choose a type Astar')
-        print('Astar(A), Improved Astar(I), No Sight (S)')
+        print('Astar(A), Improved Astar(I), No Sight (S), Weighted Astar(W)')
         type_s = input()
         
-        if type_s == 'A' or type_s == 'I' or type_s == 'S':
+        if type_s == 'A' or type_s == 'I' or type_s == 'S' or type_s == 'W':
             right_input = 0
         
         if right_input != 0:
@@ -2561,10 +2834,358 @@ while runnable:
             window2 = display_maze(maze_copy)
             window2.mainloop()
             print(len(final_path))
+            
         
+    elif type_s == 'W':
+        
+        time_a = time.time()
+        
+        temp_wall = []
 
+        #all grids visited
+        temp_visited = []
+        visited_list= []
+
+        path, temp_wall, temp_visited = w_AStar(s_grid, g_grid, type_h, wall_list)
+
+        wall_list.extend( temp_wall )
+
+        visited_list.extend(temp_visited)
+
+        passed = 0
+
+        #if first attempt is not compelted
+        if path == []:
+
+
+            if len(wall_list) == 0:
+
+                path, temp_wall, temp_visited = w_AStar(visited_list[-1], g_grid, type_h, wall_list)
+
+                
+                if (i in visited_list) == False:
+                    visited_list.extend(temp_visited)
+
+                #print('temp wall 1: ', temp_wall)
+
+                #if (temp_wall in wall_list) == False:
+
+                    #print('extend in while loop 1')
+                wall_list.extend( temp_wall )
+
+                #print('wall list after start grid: ', wall_list)
+
+                # goal cords not reached
+
+                #print('checking if path reached goal')
+
+                if wall_list == [[]]:
+                    print('Start surrounded by walls')
+                    runnable = False
+                    print('No path to Goal.')
+
+                    passed = 1
+
+            try:
+                if wall_list != [[]]:
+                    # path not empty but not at goal
+
+                    counter = 0
+                    #print('first last node: ', path[-1].getCord())
+
+                    while (visited_list[-1] != g_grid):
+
+                        #print('STARTING ASTAR LOOP FROM: ', visited_list[-1])
+
+                        #print('LOOPS WALL_LIST: ', wall_list)
+
+                        path, temp_wall, temp_visited  = w_AStar(visited_list[-1], g_grid, type_h, wall_list)
+
+                        #for i in temp_visited:
+                            #print('cord in temp_visited: ', i)
+                         #   if (i in visited_list) == False:
+                        visited_list.extend(temp_visited)
+
+
+                        #print('extend in while loop 2')
+                        
+                        wall_list.extend( temp_wall )
+
+                        #print('after first iteration wall_list: ', wall_list)
+
+                        counter = counter + 1
+
+                        if counter >= 999:
+                            runnable= False
+                            break
+
+
+                    if runnable == False:
+                        passed = 0
+                        #print('No path to Goal.')
+
+                    else:
+                        # maze is runnable
+                        # algorithm is complete, record time!
+                        
+                        total_time = time.time() - time_a
+                        
+                        # draw map
+                        final_path = visited_list
+
+                        #print('final_path length: ', len(final_path))
+                        #print('final_path: ', final_path)
+                        #print("\n")
+
+                        for i in range(len(final_path)):
+                            curr_location = final_path[i]
+                            # print('curr_location: ', curr_location)
+                            maze_copy[curr_location[0]][curr_location[1]] = 'g'
+
+                        # make unvisited maze grids white
+                        colored = 0
+                        for x in range(len(maze_copy)):
+                            for y in range(len(maze_copy[x])):
+
+                                for i in range(len(final_path)):
+                                    curr_location = final_path[i]
+                                    if x == curr_location[0] and y == curr_location[1]:
+                                        maze_copy[x][y] = 'g'
+                                        colored = 1
+
+                                if colored == 1:
+                                    colored = 0
+                                    continue
+
+                                if maze_copy[x][y] != 'P':
+                                    maze_copy[x][y] = 'w'
+
+
+                        maze_copy[0][0] = 's'
+                        maze_copy[size-1][size-1] = 'g'
+
+                        print('Path to Goal found. Grids traveled: ')
+                        print(len(final_path))
+                        print('Repeat Forward Astar: %s seconds used'% (total_time))
+
+                        # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
+                        path_time = time.time()
+                        best_ppath = path_Astar(s_grid, g_grid, type_h, final_path)
+
+                        if best_ppath:
+
+                            up = best_ppath[len(best_ppath)-1].getParent()
+                            best_path = [up.getCord()]
+                            best_path.append(up.getCord())
+                            while up.getCord() != s_grid:
+                                up = up.getParent()
+                                best_path.append(up.getCord())
+
+                        best_path = best_path[::-1]
+
+                        for i in range(len(best_path)):
+                            temp_cord = best_path[i]
+                            maze_copy[temp_cord[0]][temp_cord[1]] = 'r'
+
+                        maze_copy[0][0] ='s'
+                        maze_copy[size-1][size-1] = 'r'
+
+                        print('Shortest path within found path: ')
+                        
+                        print(len(best_path))
+                        
+                        print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
+
+                        window2 = display_maze(maze_copy)
+                        window2.mainloop()
+
+                        # NOW FOR BEST PATH IN MAZE, WE KNOW ALL WALL LOCATIONS
+                        shortest_time = time.time()
+                        shortest_path = all_Astar(s_grid, g_grid, type_h)
+                        
+                        #print('shortest_path: ', shortest_path)
+
+                        if shortest_path:
+
+                            # some how we need to iterate the visited grids
+                            # else they become black grids (walls) or unknown reasons
+                            for i in range(len(shortest_path) - 1):
+                                holder= shortest_path[i].getCord()
+                                all_maze_copy[holder[0]][holder[1]] = 'w'
+
+                            short_up = shortest_path[len(shortest_path)-1].getParent()
+                            shortest = [short_up.getCord()]
+                            shortest.append(short_up.getCord())
+
+                            while short_up.getCord() != s_grid:
+
+                                short_up = short_up.getParent()
+                                #print('up: ', short_up.getCord())
+                                shortest.append(short_up.getCord())
+
+                            shortest = shortest[::-1]
+
+                            for i in range(len(shortest)):
+                                #print(shortest[i])
+
+                                short_cord = shortest[i]
+                                all_maze_copy[short_cord[0]][short_cord[1]] = 'b'
+
+                            maze_copy[0][0] ='s'
+                            all_maze_copy[size-1][size-1] = 'b'
+
+                            print('Shortest Path in Maze found. Grids traveled: ')
+                            print(len(shortest))
+                            print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
+
+                            
+                            window3 = display_maze(all_maze_copy)
+                            window3.mainloop()
+
+                        runnable = False
+                        passed = 1
+
+            except:
+                print('Unsolvable, ending Maze Run.')
+
+
+                
+            # maze is runnable
+            if runnable == True:
+                final_path = visited_list
+
+                #print('final_path length: ', len(final_path))
+                #print('final_path: ', final_path)
+                #print("\n")
+
+                for i in range(len(final_path)):
+                    curr_location = final_path[i]
+                    # print('curr_location: ', curr_location)
+                    maze_copy[curr_location[0]][curr_location[1]] = 'g'
+
+                # make unvisited maze grids white
+                colored = 0
+                for x in range(len(maze_copy)):
+                    for y in range(len(maze_copy[x])):
+
+                        for i in range(len(final_path)):
+                            curr_location = final_path[i]
+                            if x == curr_location[0] and y == curr_location[1]:
+                                maze_copy[x][y] = 'g'
+                                colored = 1
+
+                        if colored == 1:
+                            colored = 0
+                            continue
+
+                        if maze_copy[x][y] != 'P':
+                            maze_copy[x][y] = 'w'
+
+
+                maze_copy[0][0] = 's'
+                maze_copy[size-1][size-1] = 'g'
+
+                print('Path to Goal found. Grids traveled: ')
+                print(len(final_path))
+                print('Repeat Forward Astar: %s seconds used'% (time.time() - time_a))
+
+                # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
+
+                window2 = display_maze(maze_copy)
+                window2.mainloop()
+
+
+
+                #except:
+                 #   print('Unsolvable, ending Maze Run.')
+
+                    
+        if path and runnable == True:
+            # path completed
+
+            #start from goal grid
+            up = path[len(path) - 1]
+            final_path = [up.getCord()]
+
+            while up.getCord() != s_grid:
+                up = up.getParent()
+                final_path.append(up.getCord())
+
+            #reverse the path
+            final_path = final_path[::-1]
+
+
+            for i in range(len(final_path)):
+                curr_location = final_path[i]
+                #print('curr_location: ', curr_location)
+                maze_copy[curr_location[0]][curr_location[1]] = 'g'
+
+
+            # make unvisited maze grids white
+            colored = 0
+            for x in range(len(maze_copy)):
+                for y in range(len(maze_copy[x])):
+
+                    for i in range(len(final_path)):
+                        curr_location = final_path[i]
+                        if x == curr_location[0] and y == curr_location[1]:
+                            maze_copy[x][y] = 'r'
+                            colored = 1
+
+                    if colored == 1:
+                        colored = 0
+                        continue
+                    if maze_copy[x][y] != 'P':
+                        maze_copy[x][y] = 'w'
+
+
+            maze_copy[0][0] = 's'
+            maze_copy[size-1][size-1] = 'g'
+
+            print('Path to Goal found. Grids traveled: ')
+            print(len(final_path))
+
+            print('Shortest within Path found. Grids traveled: ')
+            print(len(final_path))
+
+            print('Shortest Path in Maze found. Grids traveled: ')
+            print(len(final_path))
+
+            window2 = display_maze(maze_copy)
+            window2.mainloop()
+
+            runnable = False
+            passed=1
+
+        if runnable == False and passed == 0:
+            #runnable = False
+            print('No path to Goal.')
+            print('visited_list: ', visited_list)
+            
+            print('Path to Goal failed. Grids traveled: ')
+            for x in range(len(maze_copy)):
+                for y in range(len(maze_copy[x])):
+
+                    for i in range(len(visited_list)):
+                        curr_location = visited_list[i]
+                        if x == curr_location[0] and y == curr_location[1]:
+                            maze_copy[x][y] = 'g'
+                            colored = 1
+
+                    if colored == 1:
+                        colored = 0
+                        continue
+
+                    if maze_copy[x][y] != 'P':
+                        maze_copy[x][y] = 'w'
+
+
+            window2 = display_maze(maze_copy)
+            window2.mainloop()
+            print(len(final_path))
     
 
 
 #--------------------
 #run function end
+
