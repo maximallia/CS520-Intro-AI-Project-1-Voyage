@@ -1874,7 +1874,7 @@ while runnable:
         temp_visited = []
         visited_list= []
 
-        path, temp_wall, temp_visited = six_AStar(s_grid, g_grid, type_h, wall_list)
+        path, temp_wall, temp_visited = improve_AStar(s_grid, g_grid, type_h, wall_list)
 
         wall_list.extend( temp_wall )
 
