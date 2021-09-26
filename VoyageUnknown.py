@@ -436,6 +436,94 @@ def path_Astar(s, g, type_h, gridworld):
             
     return []
     
+
+def check_path(s, g, type_h, gridworld):
+    
+    temp_world = gridworld
+    
+    # set goal coor
+    g_row = g[0]
+    g_col = g[1]
+    
+    fringe_heap = []
+    visited = []
+    start_node = Node(s[0], s[1], Node)
+    
+    h_val = h_function(type_h, s[0], g_row, s[1], g_col)
+    start_node.setH(h_val)
+    
+    heapq.heappush(fringe_heap, start_node)
+    
+    while fringe_heap:
+        
+        #print(gridworld)
+
+        curr_node = heapq.heappop(fringe_heap)
+        #print('curr_node: ', curr_node.getCord())
+        
+        
+        visited.append(curr_node)
+        curr_cord = curr_node.getCord()
+        
+        curr_row = curr_cord[0]
+        curr_col = curr_cord[1]
+        cost = curr_node.getCost() + 1
+        
+        if curr_cord == g:
+            return visited
+        
+        up = curr_row-1
+        down = curr_row + 1
+        right = curr_col +1
+        left = curr_col - 1
+        
+        if [up, curr_col] in temp_world:
+            
+            temp_h = h_function(type_h, up, g_row, curr_col, g_col)
+            new_node = Node(up, curr_col, curr_node)
+            new_node.setCost(cost)
+            
+            new_h = temp_h + cost
+            new_node.setH(new_h)
+            heapq.heappush(fringe_heap, new_node)
+            
+            temp_world.remove(new_node.getCord())
+            
+        if [down, curr_col] in temp_world:
+            temp_h = h_function(type_h, down, g_row, curr_col, g_col)
+            new_node = Node(down, curr_col, curr_node)
+            new_node.setCost(cost)
+            
+            new_h = temp_h + cost
+            new_node.setH(new_h)
+            heapq.heappush(fringe_heap, new_node)
+        
+            temp_world.remove(new_node.getCord())
+        
+        if [curr_row, right] in temp_world:
+            temp_h = h_function(type_h, curr_row, g_row, right, g_col)
+            new_node = Node(curr_row, right, curr_node)
+            new_node.setCost(cost)
+            
+            new_h = temp_h + cost
+            new_node.setH(new_h)
+            heapq.heappush(fringe_heap, new_node)
+            
+            temp_world.remove(new_node.getCord())
+            
+        if [curr_row, left] in temp_world:
+            temp_h = h_function(type_h, curr_row, g_row, left, g_col)
+            new_node = Node(curr_row, left, curr_node)
+            new_node.setCost(cost)
+            
+            new_h = temp_h + cost
+            new_node.setH(new_h)
+            heapq.heappush(fringe_heap, new_node)
+        
+            temp_world.remove(new_node.getCord())
+            
+    return []
+    
     
 
 # the heuristics
@@ -474,7 +562,7 @@ def h_function(h_formula, curr_row, g_row, curr_col, g_col):
 
 def create_g(type_h, curr_row, curr_col):
     
-    temp_path = all_Astar([0,0], [curr_row, curr_col], type_h)
+    temp_path = check_path([0,0], [curr_row, curr_col], type_h, visited_list1)
     length = 0
     g = 0
     #print('temp path: ', len(temp_path))
@@ -550,6 +638,8 @@ def all_Astar(s, g, type_h):
     short_heap = []
     short_tree = []
     start_node = Node(s[0], s[1], Node)
+    
+    print(start_node.getCord())
     
     h_val = h_function(type_h, s[0], g_row, s[1], g_col)
     start_node.setH(h_val)
@@ -1970,6 +2060,8 @@ while runnable:
         fringe_heap = []
         
         visited_list= [[0,0]]
+        
+        visited_list1 = [[0,0]]
 
         passed = 0
         
@@ -1987,6 +2079,8 @@ while runnable:
                 break
 
             visited_list.extend(temp_visited)
+            
+            visited_list1.extend(temp_visited)
 
             #print('temp wall 1: ', temp_wall)
 
@@ -2150,6 +2244,8 @@ while runnable:
         fringe_heap = []
         
         visited_list= [[0,0]]
+        
+        visited_list1 = [[0,0]]
 
         path = []
 
@@ -2167,6 +2263,8 @@ while runnable:
                 break
             
             visited_list.extend(temp_visited)
+            
+            visited_list1.extend(temp_visited)
 
             #print('temp wall 1: ', temp_wall)
 
@@ -2323,6 +2421,8 @@ while runnable:
         temp_visited = []
         visited_list= [[0,0]]
         
+        visited_list1 = [[0,0]]
+        
         path = []
         
         fringe_heap = []
@@ -2349,6 +2449,8 @@ while runnable:
              #   print('2 path cord: ', path[i].getCord())
             
             visited_list.extend(temp_visited)
+            
+            visited_list1.extend(temp_visited)
 
             wall_list.extend( temp_wall )
 
@@ -2437,7 +2539,7 @@ while runnable:
                 shortest_time = time.time()
                 shortest_path = all_Astar(s_grid, g_grid, type_h)
 
-                #print('shortest_path: ', shortest_path)
+                print('shortest_path: ', shortest_path)
 
                 if shortest_path:
 
@@ -2506,6 +2608,8 @@ while runnable:
         temp_visited = []
         visited_list= [[0,0]]
         
+        visited_list1 = [[0,0]]
+        
 
         path = []
         
@@ -2532,6 +2636,8 @@ while runnable:
             
             visited_list.extend(temp_visited)
 
+            visited_list1.extend(temp_visited)
+            
             wall_list.extend( temp_wall )
 
              
@@ -2677,5 +2783,6 @@ while runnable:
 
 #--------------------
 #run function end
+
 
 
