@@ -646,7 +646,7 @@ def AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
 
-        path.append(curr_node)
+        heapq.heappush(path, curr_node)
         
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -743,7 +743,7 @@ def AStar(path, s, g, type_h, wall_list):
                 print( 'Maze Unsolvable.')
             try:
                 temp_visited.append(parent_node.getCord())
-                path.append(parent_node)
+                heapq.heappush(path, parent_node)
             except:
                 print('Maze is not Solvable')
             
@@ -873,7 +873,7 @@ def AStar(path, s, g, type_h, wall_list):
             #heapq.heappush(visited, new_node)
             #print('grid before goal cord: ', new_node.getCord())
             #print('goal reached')
-            path.append(new_node)
+            heapq.heappush(path, new_node)
             return len(path), temp_walls, temp_visited
             break
             
@@ -932,7 +932,7 @@ def six_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        path.append(curr_node)
+        heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -1048,7 +1048,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             try:
                 #print('previous node: ', temp_visited[-1])
                 temp_visited.append(parent_node.getCord())
-                path.append(parent_node)
+                heapq.heappush(path, parent_node)
                 #print('last node: ', temp_visited[-1])
             except:
                 print('Maze is not Solvable')
@@ -1152,7 +1152,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             #heapq.heappush(temp_nodes, new_node)
             #heapq.heappush(visited, new_node)
             
-            path.append(new_node)
+            heapq.heappush(path, new_node)
             
             #print('grid before goal cord: ', new_node.getCord())
             print('goal reached')
@@ -1217,7 +1217,7 @@ def w_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        path.append(curr_node)
+        heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -1333,7 +1333,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             try:
                 #print('previous node: ', temp_visited[-1])
                 temp_visited.append(parent_node.getCord())
-                path.append(parent_node)
+                heapq.heappush(path, parent_node)
                 #print('last node: ', temp_visited[-1])
             except:
                 print('Maze is not Solvable')
@@ -1437,7 +1437,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             #heapq.heappush(temp_nodes, new_node)
             #heapq.heappush(visited, new_node)
             
-            path.append(new_node)
+            heapq.heappush(path, new_node)
             
             #print('grid before goal cord: ', new_node.getCord())
             print('goal reached')
@@ -1497,7 +1497,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        path.append(curr_node)
+        heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -1683,7 +1683,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
                         dead_list.append([dead_row, dead_col])
                         temp_visited.append([dead_row, dead_col])
                         
-                        path.append(dead_node)
+                        heapq.heappush(path, dead_node)
                         
                         dead_cord = [dead_up, dead_col]
                     
@@ -1693,7 +1693,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
                         dead_list.append([dead_row, dead_col])
                         temp_visited.append([dead_row, dead_col])
                         
-                        path.append(dead_node)
+                        heapq.heappush(path, dead_node)
 
                         dead_cord = [dead_down, dead_col]
                         
@@ -1703,7 +1703,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
                         dead_list.append([dead_row, dead_col])
                         temp_visited.append([dead_row, dead_col])
                         
-                        path.append(dead_node)
+                        heapq.heappush(path, dead_node)
                         
                         dead_cord = [dead_row, dead_right]
                         
@@ -1713,7 +1713,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
                         dead_list.append([dead_row, dead_col])
                         temp_visited.append([dead_row, dead_col])
             
-                        path.append(dead_node)
+                        heapq.heappush(path, dead_node)
                         
                         dead_cord = [dead_row, dead_left]
                     
@@ -1814,7 +1814,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
             #heapq.heappush(visited, new_node)
             #print('grid before goal cord: ', new_node.getCord())
             print('goal reached')
-            path.append(new_node)
+            heapq.heappush(path, new_node)
             
             return len(path), temp_walls, temp_visited
             break
