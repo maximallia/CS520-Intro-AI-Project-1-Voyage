@@ -639,7 +639,7 @@ def all_Astar(s, g, type_h):
     short_tree = []
     start_node = Node(s[0], s[1], Node)
     
-    print(start_node.getCord())
+    #print(start_node.getCord())
     
     h_val = h_function(type_h, s[0], g_row, s[1], g_col)
     start_node.setH(h_val)
