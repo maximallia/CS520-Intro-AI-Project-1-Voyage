@@ -2080,7 +2080,7 @@ while runnable:
         grid_counter = 0
         
         #if first attempt is not compelted
-        while visited_list[-1] != g_grid:
+        while visited_list[-1] != g_grid and runnable == True:
 
             path_len, temp_wall, temp_visited, grid_counter = AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list, grid_counter)
             
@@ -2348,9 +2348,7 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ')
-
-                print(len(best_path))
+                print('Shortest path within found path: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
@@ -2392,8 +2390,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ')
-                    print(len(shortest))
+                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
@@ -2537,9 +2534,7 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ')
-
-                print(len(best_path))
+                print('Shortest path within found path: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
@@ -2723,9 +2718,7 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ')
-
-                print(len(best_path))
+                print('Shortest path within found path: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
@@ -2767,8 +2760,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ')
-                    print(len(shortest))
+                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
