@@ -1919,7 +1919,7 @@ while runnable:
     type_s = 'C'   
     while right_input != 0:
         print('Please choose a type Astar')
-        print('BFS(B), Astar(A), Improved Astar(I), No Sight (S), Weighted Astar(W)')
+        print('Astar(A), Improved Astar(I), No Sight (S), Weighted Astar(W), BFS(B)')
         type_s = input()
         
         if type_s == 'B' or type_s == 'A' or type_s == 'I' or type_s == 'S' or type_s == 'W':
@@ -1951,6 +1951,8 @@ while runnable:
         
         path_len = 0
 
+        counter = 0
+        
         #if first attempt is not compelted
         while visited_list[-1] != g_grid:
 
@@ -1975,7 +1977,9 @@ while runnable:
             # goal cords not reached
 
             #print('checking if path reached goal')
+            
 
+            
             if visited_list[-1] == g_grid:
                 
                 # maze is runnable
@@ -2097,7 +2101,12 @@ while runnable:
                 runnable = False
                 passed = 1
                 break
-
+                
+            if counter > 999:
+                runnable = False
+                break
+                
+            counter = counter + 1
         
         if runnable == False and passed == 0:
             #runnable = False
@@ -2119,6 +2128,8 @@ while runnable:
         path = []
 
         passed = 0
+        
+        counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
@@ -2259,7 +2270,14 @@ while runnable:
                 runnable = False
                 passed = 1
                 break
-
+            
+            
+            if counter > 999:
+                runnable = False
+                break
+                
+            counter = counter + 1
+            
 
         if runnable == False and passed == 0:
             #runnable = False
@@ -2285,6 +2303,8 @@ while runnable:
         comp_path = []
 
         passed = 0
+        
+        counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
@@ -2430,9 +2450,13 @@ while runnable:
 
                 runnable = False
                 passed = 1
+            
+            if counter > 999:
+                runnable = False
+                break
+                
+            counter = counter + 1
 
-            #except:
-             #   print('Unsolvable, ending Maze Run.')
 
         if runnable == False and passed == 0:
             #runnable = False
@@ -2458,6 +2482,8 @@ while runnable:
         comp_path = []
 
         passed = 0
+        
+        counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
@@ -2603,9 +2629,13 @@ while runnable:
 
                 runnable = False
                 passed = 1
+            
+            if counter > 999:
+                runnable = False
+                break
+                
+            counter = counter + 1
 
-            #except:
-             #   print('Unsolvable, ending Maze Run.')
 
         if runnable == False and passed == 0:
             #runnable = False
