@@ -746,6 +746,7 @@ def AStar(path, s, g, type_h, wall_list):
                 heapq.heappush(path, parent_node)
             except:
                 print('Maze is not Solvable')
+                return -99 , temp_walls, temp_visited
             
             #see no direction as a wall
             temp_walls.extend( curr_node.getCord() )
@@ -1052,6 +1053,7 @@ def six_AStar(path, s, g, type_h, wall_list):
                 #print('last node: ', temp_visited[-1])
             except:
                 print('Maze is not Solvable')
+                return -99 , temp_walls, temp_visited
             
             #see no direction as a wall
             #if temp_walls != []:
@@ -1337,6 +1339,7 @@ def w_AStar(path, s, g, type_h, wall_list):
                 #print('last node: ', temp_visited[-1])
             except:
                 print('Maze is not Solvable')
+                return -99 , temp_walls, temp_visited
             
             #see no direction as a wall
             #if temp_walls != []:
@@ -1666,7 +1669,8 @@ def improve_AStar(path, s, g, type_h, wall_list):
                 # no direction available
                 if moveable == 0:
                     #print('stuck with no path')
-                    return len(path), temp_walls, temp_visited
+                    return -99 , temp_walls, temp_visited
+                    #return len(path), temp_walls, temp_visited
                 
                 # out of hall, stop while loop and return
                 elif moveable == 5:
@@ -1923,6 +1927,10 @@ while runnable:
         while visited_list[-1] != g_grid:
 
             path_len, temp_wall, temp_visited = AStar(path, visited_list[-1], g_grid, type_h, wall_list)
+            
+            if path_len < 0:
+                runnable = False
+                break
 
             visited_list.extend(temp_visited)
 
@@ -2068,9 +2076,6 @@ while runnable:
             print('No path to Goal.')
             #print('visited_list: ', visited_list)
 
-            window2 = display_maze(maze_copy)
-            window2.mainloop()
-            print(len(final_path))
     
     elif type_s == 'I':
         
@@ -2092,7 +2097,9 @@ while runnable:
 
             path_len, temp_wall, temp_visited = improve_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
 
-
+            if path_len < 0:
+                runnable = False
+                break
             
             visited_list.extend(temp_visited)
 
@@ -2231,9 +2238,6 @@ while runnable:
             print('No path to Goal.')
             #print('visited_list: ', visited_list)
 
-            window2 = display_maze(maze_copy)
-            window2.mainloop()
-            print(len(final_path))
     
     elif type_s == 'A':
         
@@ -2262,7 +2266,10 @@ while runnable:
 
             path_len, temp_wall, temp_visited = six_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
 
-
+            if path_len < 0:
+                runnable = False
+                break
+            
             #for i in range(len(path)):
              #   print('2 path cord: ', path[i].getCord())
             
@@ -2403,10 +2410,6 @@ while runnable:
             #runnable = False
             print('No path to Goal.')
             #print('visited_list: ', visited_list)
-
-            window2 = display_maze(maze_copy)
-            window2.mainloop()
-            print(len(final_path))
             
         
     elif type_s == 'W':
@@ -2436,6 +2439,9 @@ while runnable:
 
             path_len, temp_wall, temp_visited = w_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
 
+            if path_len < 0:
+                runnable = False
+                break
 
             #for i in range(len(path)):
              #   print('2 path cord: ', path[i].getCord())
@@ -2578,9 +2584,7 @@ while runnable:
             print('No path to Goal.')
             #print('visited_list: ', visited_list)
 
-            window2 = display_maze(maze_copy)
-            window2.mainloop()
-            print(len(final_path))
+            
 
 
 #--------------------
