@@ -2539,7 +2539,7 @@ while runnable:
                 shortest_time = time.time()
                 shortest_path = all_Astar(s_grid, g_grid, type_h)
 
-                print('shortest_path: ', shortest_path)
+                #print('shortest_path: ', shortest_path)
 
                 if shortest_path:
 
