@@ -456,7 +456,9 @@ def chebyshev(x_1, x_2, y_1, y_2):
 # h_formula = E, M, C
 def h_function(h_formula, curr_row, g_row, curr_col, g_col):
     # E = euclidean
+    # f(n)
     distance = 0
+    
     if h_formula == 'E':
         distance = euclidean(curr_row, g_row, curr_col, g_col)
     # M = manhattan
@@ -468,6 +470,27 @@ def h_function(h_formula, curr_row, g_row, curr_col, g_col):
         distance = chebyshev(curr_row, g_row, curr_col, g_col)
     
     return distance
+
+
+def create_g(type_h, curr_row, curr_col):
+    
+    temp_path = all_Astar([0,0], [curr_row, curr_col], type_h)
+    length = 0
+    g = 0
+    #print('temp path: ', len(temp_path))
+    
+    if len(temp_path) != 0:
+        try:
+            up = temp_path[len(temp_path)-1].getParent()
+            while up.getCord() != [0,0]:
+                up = up.getParent()
+                temp_path.append(up.getCord())
+
+            g = len(temp_path)
+        except:
+            return g
+    return g
+
 
 # compare h_val
 def compare_h(up, down, right, left):
@@ -497,13 +520,18 @@ def move_robot(curr_row, g_row, curr_col, g_col, curr_node, h_type):
     new_node = Node(curr_row, curr_col, curr_node)
 
     # 2.1) set new cost of new node, +1 for includes new node
-    new_cost = curr_node.getCost() + 1
-    new_node.setCost(new_cost)
+    #new_cost = curr_node.getCost() + 1
+    
+    
+    # f(n) = g + h
+    g = create_g(h_type, curr_row, curr_col)
+    
+    #new_node.setCost(g)
 
     # 2.2) set new h_value, store into node
-    new_distance = h_function(h_type, curr_row, g_row, curr_col, g_col)
-    new_h = new_cost + new_distance
-    new_node.setH(new_h)
+    new_h = h_function(h_type, curr_row, g_row, curr_col, g_col)
+    new_cost = g + new_h
+    new_node.setCost(new_cost)
     
     # 3) return new_node
     return new_node
@@ -596,14 +624,14 @@ def all_Astar(s, g, type_h):
 # s: our starting node, not 'start' grid, but where A* starts
 # g: the path towards the 'goal' grid (finalized grids)
 # type_h: the target heuristic formula
-def AStar(path, s, g, type_h, wall_list):
+def AStar(path, fringe_heap, s, g, type_h, wall_list):
 
     # set goal coor
     g_row = g[0]
     g_col = g[1]
 
     # initialize the heap array
-    fringe_heap = []
+    #fringe_heap = []
     
 
     # init the start grid
@@ -619,16 +647,6 @@ def AStar(path, s, g, type_h, wall_list):
     # push starter node into heap
     heapq.heappush(fringe_heap, start_node)
     #heapq.heappush(visited, start_node)
-    
-    
-    #print('start node: ', start_node.getCord())
-    #print("\n")
-    
-    #return
-    
-    # reset wall_found each new Astar aglor
-    # wall_found = False
-    #starter_node = True
     
     starting = 0
     
@@ -875,12 +893,16 @@ def AStar(path, s, g, type_h, wall_list):
             #print('grid before goal cord: ', new_node.getCord())
             #print('goal reached')
             heapq.heappush(path, new_node)
+            
+            print('goal reached')
+            
             return len(path), temp_walls, temp_visited
             break
             
         if wall_found == True:
             print('wall coordinates: ', temp_walls)
             break
+    
         
     # unreachable goal, return empty
     return -99, temp_walls, temp_visited
@@ -891,14 +913,14 @@ def AStar(path, s, g, type_h, wall_list):
 # problem 6 Astar with line of view
 # can see if it is block grid as neighbors, no need to hit
 # -------------------------------
-def six_AStar(path, s, g, type_h, wall_list):
+def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
     # set goal coor
     g_row = g[0]
     g_col = g[1]
 
     # initialize the heap array
-    fringe_heap = []
+    #fringe_heap = []
     
 
     # init the start grid
@@ -1175,7 +1197,7 @@ def six_AStar(path, s, g, type_h, wall_list):
 
 #Weighted Astar
 #-----------------------
-def w_AStar(path, s, g, type_h, wall_list):
+def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
     
     w = 1.5
 
@@ -1184,7 +1206,7 @@ def w_AStar(path, s, g, type_h, wall_list):
     g_col = g[1]
 
     # initialize the heap array
-    fringe_heap = []
+    #fringe_heap = []
     
 
     # init the start grid
@@ -1465,13 +1487,13 @@ def w_AStar(path, s, g, type_h, wall_list):
 # improved Astar
 #
 #-------------------
-def improve_AStar(path, s, g, type_h, wall_list):
+def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
     # set goal coor
     g_row = g[0]
     g_col = g[1]
 
     # initialize the heap array
-    fringe_heap = []
+    #fringe_heap = []
     
 
     # init the start grid
@@ -1945,6 +1967,8 @@ while runnable:
         
         path = []
         
+        fringe_heap = []
+        
         visited_list= [[0,0]]
 
         passed = 0
@@ -1956,7 +1980,7 @@ while runnable:
         #if first attempt is not compelted
         while visited_list[-1] != g_grid:
 
-            path_len, temp_wall, temp_visited = AStar(path, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited = AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
             
             if path_len < 0:
                 runnable = False
@@ -2123,6 +2147,8 @@ while runnable:
         #all grids visited
         temp_visited = []
         
+        fringe_heap = []
+        
         visited_list= [[0,0]]
 
         path = []
@@ -2134,7 +2160,7 @@ while runnable:
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
 
-            path_len, temp_wall, temp_visited = improve_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited = improve_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
 
             if path_len < 0:
                 runnable = False
@@ -2297,8 +2323,9 @@ while runnable:
         temp_visited = []
         visited_list= [[0,0]]
         
-
         path = []
+        
+        fringe_heap = []
         
         comp_path = []
 
@@ -2312,7 +2339,7 @@ while runnable:
 
             #if len(wall_list) == 0:
 
-            path_len, temp_wall, temp_visited = six_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited = six_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
 
             if path_len < 0:
                 runnable = False
@@ -2335,9 +2362,10 @@ while runnable:
 
                 # draw map
                 final_path = visited_list
-
+                
                 #for i in range(len(path)):
-                 #   print(path[i].getCord())
+                 #   print('path: ', path[i].getCord())
+
 
                 #print('final_path length: ', len(final_path))
                 #print('final_path: ', final_path)
@@ -2472,6 +2500,8 @@ while runnable:
 
         path = []
         
+        fringe_heap = []
+        
         #all grids visited
         temp_visited = []
         visited_list= [[0,0]]
@@ -2491,7 +2521,7 @@ while runnable:
 
             #if len(wall_list) == 0:
 
-            path_len, temp_wall, temp_visited = w_AStar(path, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited = w_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
 
             if path_len < 0:
                 runnable = False
