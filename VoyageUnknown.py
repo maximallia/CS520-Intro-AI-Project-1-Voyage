@@ -1475,7 +1475,7 @@ while runnable:
             visited_list.extend(temp_visited)
             visited_list1.extend(temp_visited)
             wall_list.append( temp_wall )
-            if g_grid in visited_list:
+            if visited_list[-1] == g_grid:
                 # maze is runnable
                 total_time = time.time() - time_a
                 final_path = visited_list
@@ -1571,7 +1571,7 @@ while runnable:
             visited_list1.extend(temp_visited)
             wall_list.extend( temp_wall )
            
-            if g_grid in visited_list:
+            if visited_list[-1] == g_grid:
                 # path not empty but not at goal
                 total_time = time.time() - time_a
                 # draw map
@@ -1673,7 +1673,7 @@ while runnable:
             wall_list.extend( temp_wall )
 
             # if goal grid is added to visited_list
-            if g_grid in visited_list:
+            if visited_list[-1] == g_grid:
                 total_time = time.time() - time_a
 
                 # draw map
@@ -1780,7 +1780,7 @@ while runnable:
             visited_list.extend(temp_visited)
             visited_list1.extend(temp_visited)
             wall_list.extend( temp_wall )
-            if g_grid in visited_list:
+            if visited_list[-1] == g_grid:
                 total_time = time.time() - time_a
                 # draw map
                 final_path = visited_list
