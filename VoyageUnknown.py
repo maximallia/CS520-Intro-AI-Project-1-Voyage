@@ -2149,9 +2149,10 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Path to Goal found with repeat Astar. Grids traveled: ', path_len)
                 print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
+                print('\n')
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                 path_time = time.time()
@@ -2175,9 +2176,11 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ', len(best_path))
+                print('Shortest path in info. from Astar: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
+                
+                print('\n')
 
                 window2 = display_maze(maze_copy)
                 window2.mainloop()
@@ -2216,9 +2219,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
-
-
+                    print('Shortest Path in Maze brute force Astar. Grids traveled: ', len(shortest))
 
                     window3 = display_maze(all_maze_copy)
                     window3.mainloop()
@@ -2322,9 +2323,10 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ',path_len)
+                print('Path to Goal found with repeat Astar. Grids traveled: ',path_len)
                 print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
+                print('\n')
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                 path_time = time.time()
@@ -2348,10 +2350,10 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ', len(best_path))
+                print('Shortest path with info from Astar: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
-
+                print('\n')
                 window2 = display_maze(maze_copy)
                 window2.mainloop()
 
@@ -2390,7 +2392,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
+                    print('Shortest Path in Maze brute force Astar. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
@@ -2508,10 +2510,11 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Path to Goal found with repeat Astar. Grids traveled: ', path_len)
                 print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
-
+                print('\n')
+                
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                 path_time = time.time()
                 best_ppath = path_Astar(s_grid, g_grid, type_h, final_path)
@@ -2534,10 +2537,11 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ', len(best_path))
+                print('Shortest path in info from Astar: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
-
+                print('\n')
+                
                 window2 = display_maze(maze_copy)
                 window2.mainloop()
 
@@ -2576,7 +2580,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
+                    print('Shortest Path in Maze found brute force Astar. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
@@ -2692,10 +2696,10 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Path to Goal found with repeat Astar. Grids traveled: ', path_len)
                 print('Number of grids popped : ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
-
+                print('\n')
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
                 path_time = time.time()
                 best_ppath = path_Astar(s_grid, g_grid, type_h, final_path)
@@ -2718,10 +2722,11 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ', len(best_path))
+                print('Shortest path with info from Astar: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
-
+                print('\n')
+                
                 window2 = display_maze(maze_copy)
                 window2.mainloop()
 
@@ -2760,7 +2765,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
+                    print('Shortest Path in Maze found brute force Astar. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
