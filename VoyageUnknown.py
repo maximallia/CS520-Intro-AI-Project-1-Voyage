@@ -638,7 +638,7 @@ def AStar(path, s, g, type_h, wall_list):
     
     temp_visited = []
 
-    while wall_found== False:
+    while fringe_heap and wall_found== False:
         
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
@@ -883,7 +883,7 @@ def AStar(path, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return len(path), temp_walls, temp_visited
+    return -99, temp_walls, temp_visited
 
 #----------------------
 # END A*
@@ -926,7 +926,7 @@ def six_AStar(path, s, g, type_h, wall_list):
     #temp_nodes = path
 
     #while wall_found == False:
-    while wall_met == False:
+    while fringe_heap and wall_met == False:
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
@@ -1166,7 +1166,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return len(path), temp_walls, temp_visited
+    return -99, temp_walls, temp_visited
 
 
 
@@ -1212,7 +1212,7 @@ def w_AStar(path, s, g, type_h, wall_list):
     #temp_nodes = path
 
     #while wall_found == False:
-    while wall_met == False:
+    while fringe_heap and wall_met == False:
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
@@ -1454,7 +1454,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return len(path), temp_walls, temp_visited
+    return -99, temp_walls, temp_visited
 
 
 
@@ -1495,7 +1495,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
     temp_visited = []
 
     #while wall_found == False:
-    while wall_met == False:
+    while fringe_heap and wall_met == False:
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
@@ -1835,7 +1835,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return len(path), temp_walls, temp_visited
+    return -99, temp_walls, temp_visited
 
 #-------------------
 # Astar End
@@ -2647,4 +2647,5 @@ while runnable:
 
 #--------------------
 #run function end
+
 
