@@ -714,7 +714,7 @@ def all_Astar(s, g, type_h):
 # s: our starting node, not 'start' grid, but where A* starts
 # g: the path towards the 'goal' grid (finalized grids)
 # type_h: the target heuristic formula
-def AStar(path, fringe_heap, s, g, type_h, wall_list):
+def AStar(path, fringe_heap, s, g, type_h, wall_list, counter):
 
     # set goal coor
     g_row = g[0]
@@ -751,6 +751,8 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
+        
+        counter = counter + 1
         
         temp_visited.append(curr_node.getCord())
 
@@ -862,7 +864,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
             # print('dead_end: ', temp_walls)
             # print('grid before dead_end: ', temp_visited)
             
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
         
@@ -887,7 +889,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
                 temp_walls.extend( [up, curr_col] )
                                 
                 # AStar(curr_node.getCord(), g, type_h, temp_walls)
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
             
@@ -913,7 +915,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
                 temp_walls.extend( [down, curr_col] )
                 
                 #AStar(curr_node.getCord(), g, type_h)
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
@@ -938,7 +940,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
                 temp_walls.extend( [curr_row, right] )
                 
                 #AStar(curr_node.getCord(), g, type_h)
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
@@ -964,7 +966,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
                 
                 #AStar(curr_node.getCord(), g, type_h)
                 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
@@ -986,7 +988,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
             
             print('goal reached')
             
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
             break
             
         if wall_found == True:
@@ -995,7 +997,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
     
         
     # unreachable goal, return empty
-    return -99, temp_walls, temp_visited
+    return -99, temp_walls, temp_visited, counter
 
 #----------------------
 # END A*
@@ -1003,7 +1005,7 @@ def AStar(path, fringe_heap, s, g, type_h, wall_list):
 # problem 6 Astar with line of view
 # can see if it is block grid as neighbors, no need to hit
 # -------------------------------
-def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
+def six_AStar(path, fringe_heap, s, g, type_h, wall_list, counter):
 
     # set goal coor
     g_row = g[0]
@@ -1042,6 +1044,8 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
+        
+        counter = counter + 1
         
         temp_visited.append(curr_node.getCord())
         
@@ -1173,7 +1177,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
             #print('first new_wall: ', temp_walls)
 
             
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
         
@@ -1189,7 +1193,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
                 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
             
@@ -1211,7 +1215,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
@@ -1230,7 +1234,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
@@ -1249,7 +1253,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
@@ -1270,7 +1274,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
             
             #print('grid before goal cord: ', new_node.getCord())
             print('goal reached')
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
             break
             
         if wall_met == True:
@@ -1278,7 +1282,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return -99, temp_walls, temp_visited
+    return -99, temp_walls, temp_visited, counter
 
 
 
@@ -1287,7 +1291,7 @@ def six_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
 #Weighted Astar
 #-----------------------
-def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
+def w_AStar(path, fringe_heap, s, g, type_h, wall_list, counter):
     
     w = 1.5
 
@@ -1328,6 +1332,8 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
+        
+        counter = counter + 1
         
         temp_visited.append(curr_node.getCord())
         
@@ -1459,7 +1465,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
             #print('first new_wall: ', temp_walls)
 
             
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
         
         direction_h = compare_h(up_h, down_h, right_h, left_h)
         
@@ -1475,7 +1481,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
                 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
             
@@ -1497,7 +1503,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
@@ -1516,7 +1522,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
@@ -1535,7 +1541,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
@@ -1558,7 +1564,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
             
             #print('grid before goal cord: ', new_node.getCord())
             print('goal reached')
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
             break
             
         if wall_met == True:
@@ -1566,7 +1572,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return -99, temp_walls, temp_visited
+    return -99, temp_walls, temp_visited, counter
 
 
 
@@ -1577,7 +1583,7 @@ def w_AStar(path, fringe_heap, s, g, type_h, wall_list):
 # improved Astar
 #
 #-------------------
-def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
+def improve_AStar(path, fringe_heap, s, g, type_h, wall_list, counter):
     # set goal coor
     g_row = g[0]
     g_col = g[1]
@@ -1611,6 +1617,8 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
         # start heap with pop smallest node
         # pop smallest (current) node from heap, to expand
         curr_node = heapq.heappop(fringe_heap)
+        
+        counter = counter + 1
         
         temp_visited.append(curr_node.getCord())
         
@@ -1791,7 +1799,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
                 elif moveable == 5:
                     #print('out of hallway')
                     
-                    return len(path), temp_walls, temp_visited
+                    return len(path), temp_walls, temp_visited, grid_counter
                 
                 #still in hall
                 # extend wall
@@ -1855,7 +1863,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
                 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(up, g_row, curr_col, g_col, curr_node, type_h)            
             
@@ -1878,7 +1886,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
@@ -1898,7 +1906,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
@@ -1918,7 +1926,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
 
                 wall_met = True
 
-                return len(path), temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited, counter
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
@@ -1939,7 +1947,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
             print('goal reached')
             heapq.heappush(path, new_node)
             
-            return len(path), temp_walls, temp_visited
+            return len(path), temp_walls, temp_visited, counter
             break
             
         if wall_met == True:
@@ -1947,7 +1955,7 @@ def improve_AStar(path, fringe_heap, s, g, type_h, wall_list):
             break
         
     # unreachable goal, return empty
-    return -99, temp_walls, temp_visited
+    return -99, temp_walls, temp_visited, counter
 
 #-------------------
 # Astar End
@@ -2069,10 +2077,12 @@ while runnable:
 
         counter = 0
         
+        grid_counter = 0
+        
         #if first attempt is not compelted
         while visited_list[-1] != g_grid:
 
-            path_len, temp_wall, temp_visited = AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited, grid_counter = AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list, grid_counter)
             
             if path_len < 0:
                 runnable = False
@@ -2139,8 +2149,8 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ')
-                print(path_len)
+                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
@@ -2165,9 +2175,7 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path within found path: ')
-
-                print(len(best_path))
+                print('Shortest path within found path: ', len(best_path))
 
                 print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
 
@@ -2208,8 +2216,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ')
-                    print(len(shortest))
+                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
 
 
 
@@ -2252,11 +2259,13 @@ while runnable:
         passed = 0
         
         counter = 0
+        
+        grid_counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
 
-            path_len, temp_wall, temp_visited = improve_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited, grid_counter = improve_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list, grid_counter)
 
             if path_len < 0:
                 runnable = False
@@ -2313,8 +2322,8 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ')
-                print(path_len)
+                print('Path to Goal found. Grids traveled: ',path_len)
+                print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
@@ -2432,6 +2441,8 @@ while runnable:
         passed = 0
         
         counter = 0
+        
+        grid_counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
@@ -2439,7 +2450,7 @@ while runnable:
 
             #if len(wall_list) == 0:
 
-            path_len, temp_wall, temp_visited = six_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited, grid_counter = six_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list, grid_counter)
 
             if path_len < 0:
                 runnable = False
@@ -2500,8 +2511,8 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ')
-                print(path_len)
+                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Number of grids popped: ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
@@ -2570,8 +2581,7 @@ while runnable:
                     maze_copy[0][0] ='s'
                     all_maze_copy[size-1][size-1] = 'b'
 
-                    print('Shortest Path in Maze found. Grids traveled: ')
-                    print(len(shortest))
+                    print('Shortest Path in Maze found. Grids traveled: ', len(shortest))
                     print('Shortest path in Maze: %s seconds used'% (time.time() - shortest_time))
 
 
@@ -2618,6 +2628,8 @@ while runnable:
         passed = 0
         
         counter = 0
+        
+        grid_counter = 0
 
         #if first attempt is not compelted
         while visited_list[-1] != g_grid and runnable == True:
@@ -2625,7 +2637,7 @@ while runnable:
 
             #if len(wall_list) == 0:
 
-            path_len, temp_wall, temp_visited = w_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list)
+            path_len, temp_wall, temp_visited, grid_counter = w_AStar(path, fringe_heap, visited_list[-1], g_grid, type_h, wall_list, grid_counter)
 
             if path_len < 0:
                 runnable = False
@@ -2685,8 +2697,8 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found. Grids traveled: ')
-                print(path_len)
+                print('Path to Goal found. Grids traveled: ', path_len)
+                print('Number of grids popped : ', grid_counter)
                 print('Repeat Forward Astar: %s seconds used'% (total_time))
 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
