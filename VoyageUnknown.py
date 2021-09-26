@@ -646,7 +646,7 @@ def AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
 
-        heapq.heappush(path, curr_node)
+        #heapq.heappush(path, curr_node)
         
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -679,10 +679,10 @@ def AStar(path, s, g, type_h, wall_list):
         
         # change wall_found in canmove, not return false
         # instead change the wall_found
-        up_h = 99
-        down_h = 99
-        right_h = 99
-        left_h = 99
+        up_h = 9999
+        down_h = 9999
+        right_h = 9999
+        left_h = 9999
 
         #used to count paths available
         no_path = 0
@@ -786,7 +786,7 @@ def AStar(path, s, g, type_h, wall_list):
             temp_visited.append([up, curr_col])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -805,14 +805,14 @@ def AStar(path, s, g, type_h, wall_list):
                 temp_walls.extend( [down, curr_col] )
                 
                 #AStar(curr_node.getCord(), g, type_h)
-                return fringe_heap, temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited
 
             new_node = move_robot(down, g_row, curr_col, g_col, curr_node, type_h)
             
             temp_visited.append([down, curr_col])
 
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -830,14 +830,14 @@ def AStar(path, s, g, type_h, wall_list):
                 temp_walls.extend( [curr_row, right] )
                 
                 #AStar(curr_node.getCord(), g, type_h)
-                return fringe_heap, temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited
             
             new_node = move_robot(curr_row, g_row, right, g_col, curr_node, type_h)
             
             temp_visited.append([curr_row, right])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
 
@@ -856,14 +856,14 @@ def AStar(path, s, g, type_h, wall_list):
                 
                 #AStar(curr_node.getCord(), g, type_h)
                 
-                return fringe_heap, temp_walls, temp_visited
+                return len(path), temp_walls, temp_visited
             
             new_node = move_robot(curr_row, g_row, left, g_col, curr_node, type_h)
             
             temp_visited.append([curr_row, left])
             
             #print('new cord: ', new_node.getCord())
-
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
         
@@ -933,7 +933,7 @@ def six_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        heapq.heappush(path, curr_node)
+        #heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -966,10 +966,10 @@ def six_AStar(path, s, g, type_h, wall_list):
         
         # change wall_found in canmove, not return false
         # instead change the wall_found
-        up_h = 99
-        down_h = 99
-        right_h = 99
-        left_h = 99
+        up_h = 9999
+        down_h = 9999
+        right_h = 9999
+        left_h = 9999
 
         #used to count paths available
         no_path = 0
@@ -1084,7 +1084,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([up, curr_col])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1106,7 +1106,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([down, curr_col])
 
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1125,7 +1125,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([curr_row, right])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
 
@@ -1144,7 +1144,7 @@ def six_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([curr_row, left])
             
             #print('new cord: ', new_node.getCord())
-
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
         
@@ -1219,7 +1219,7 @@ def w_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        heapq.heappush(path, curr_node)
+        # heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -1252,10 +1252,10 @@ def w_AStar(path, s, g, type_h, wall_list):
         
         # change wall_found in canmove, not return false
         # instead change the wall_found
-        up_h = 99
-        down_h = 99
-        right_h = 99
-        left_h = 99
+        up_h = 9999
+        down_h = 9999
+        right_h = 9999
+        left_h = 9999
 
         #used to count paths available
         no_path = 0
@@ -1370,7 +1370,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([up, curr_col])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1392,7 +1392,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([down, curr_col])
 
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1411,7 +1411,7 @@ def w_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([curr_row, right])
             
             #print('new cord: ', new_node.getCord())
-            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
 
@@ -1430,7 +1430,8 @@ def w_AStar(path, s, g, type_h, wall_list):
             temp_visited.append([curr_row, left])
             
             #print('new cord: ', new_node.getCord())
-
+            
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
         
@@ -1439,6 +1440,7 @@ def w_AStar(path, s, g, type_h, wall_list):
         if new_node.getCord() == g:
             #heapq.heappush(temp_nodes, new_node)
             #heapq.heappush(visited, new_node)
+            
             
             heapq.heappush(path, new_node)
             
@@ -1500,7 +1502,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
         
         temp_visited.append(curr_node.getCord())
         
-        heapq.heappush(path, curr_node)
+        # heapq.heappush(path, curr_node)
 
         # then record current node coordinate
         curr_cord = curr_node.getCord()
@@ -1533,10 +1535,10 @@ def improve_AStar(path, s, g, type_h, wall_list):
         
         # change wall_found in canmove, not return false
         # instead change the wall_found
-        up_h = 99
-        down_h = 99
-        right_h = 99
-        left_h = 99
+        up_h = 9999
+        down_h = 9999
+        right_h = 9999
+        left_h = 9999
 
         #used to count paths available
         no_path = 0
@@ -1618,14 +1620,15 @@ def improve_AStar(path, s, g, type_h, wall_list):
             
             # use up,down,right,left to iterate
             
+            dead_node = curr_node
+            
             dead_cord = curr_node.getCord()
             
             # 1=up, 2= down, 3=right, 4= left, 5= more than one avail
             moveable = 0
+            
             dead_list = [[dead_cord]]
-            
-            dead_node = curr_node
-            
+
             while  moveable != 5:
                 
                 #print('checking hall entered')
@@ -1748,6 +1751,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
             
             #print('new cord: ', new_node.getCord())
             
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1770,6 +1774,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
 
             #print('new cord: ', new_node.getCord())
             
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
             
@@ -1789,6 +1794,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
             
             #print('new cord: ', new_node.getCord())
             
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
 
@@ -1808,6 +1814,7 @@ def improve_AStar(path, s, g, type_h, wall_list):
             
             #print('new cord: ', new_node.getCord())
 
+            heapq.heappush(path, curr_node)
             heapq.heappush(fringe_heap, new_node)
             #heapq.heappush(visited, new_node)
         
@@ -1833,6 +1840,21 @@ def improve_AStar(path, s, g, type_h, wall_list):
 #-------------------
 # Astar End
 
+
+# BFS START
+#--------------------
+
+def bfs(path, s, g, type_h, wall_list):
+    
+    
+    
+    
+    
+    
+    return len(path), temp_walls, temp_visited
+
+#--------------------
+# BFS End
 
 #run functions
 #--------------------
@@ -1897,16 +1919,22 @@ while runnable:
     type_s = 'C'   
     while right_input != 0:
         print('Please choose a type Astar')
-        print('Astar(A), Improved Astar(I), No Sight (S), Weighted Astar(W)')
+        print('BFS(B), Astar(A), Improved Astar(I), No Sight (S), Weighted Astar(W)')
         type_s = input()
         
-        if type_s == 'A' or type_s == 'I' or type_s == 'S' or type_s == 'W':
+        if type_s == 'B' or type_s == 'A' or type_s == 'I' or type_s == 'S' or type_s == 'W':
             right_input = 0
         
         if right_input != 0:
             print('Wrong input, try again...')
     
-    if type_s == 'S':
+    if type_s == 'B':
+        
+        print('unfinished')
+        runnable = False
+    
+    
+    elif type_s == 'S':
         
         time_a = time.time()
         
