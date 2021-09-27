@@ -2,8 +2,8 @@
 \usepackage{algorithm} 
 \usepackage{algpseudocode} 
 
-\title{CS520 Project 1: Voyage Unknown}
-\author{Daniel Ying dty16 Sec 198:520:01, Zachary Tarman zpt2}
+\title{CS520 Project 1: Voyage Into The Unknown}
+\author{Daniel Ying (dty16) Sec 198:520:01, Zachary Tarman (zpt2) Sec 198:520:01}
 
 \usepackage{xcolor}
 \usepackage{proof}
@@ -12,7 +12,7 @@
 
 \maketitle
 
-\textbf{Submitter}: 
+\textbf{Submitter}: Daniel Ying
 
 \textbf{Honor Code}:
 
@@ -28,11 +28,11 @@ I acknowledge and accept the Honor Code and rules of Project 1.
 
 \textbf{Workload}: 
 
-Daniel Ying: Coded the Program for Voyage Unknown. Formatted the report in latex code.
+Daniel Ying: Coded the Program for Voyage Unknown in Python. Formatted the report in LaTeX. Recorded and reported data for BFS extra credit.
 
-Zachary Tarman: Authored the report and collected corresponding data.
+Zachary Tarman: Authored the report for Question 1 through Question 9 and collected corresponding data.
 
-Together: Brainstormed the Algorithm of Repeated Forward A*.
+Together: Brainstormed the Algorithm of Repeated Forward A*. Discussed the variants to the regular Repeated Forward A* algorithm needed for collecting data on Q4-Q9.
 \vspace{.5cm}
 
 \newpage
@@ -47,7 +47,6 @@ Granted, when the agent makes a planned path in the first part of an iteration a
 
 On the contrary, if it discovers a blocked cell in its path, this will necessarily require that we change our current planned path. We cannot continue, and we must replan from our current state.
 
-
 \newpage
 \exercise*
 Will the agent ever get stuck in a solvable maze? Why or why not?
@@ -60,7 +59,6 @@ Though it may be a long time before a successful solution is reached in some cas
 
 As long as there is some path from start to goal, the agent will discover it by trial and error at the very least (if not also good planning via heuristics or some other method to quicken the search). More generally, most search algorithms such as BFS and DFS would also succeed in not getting stuck because the agent will keep searching unblocked edges until a goal is reached, and only after the entire fringe is exhausted would the algorithms declare that the maze is unsolvable.
 
-
 \newpage
 \exercise*
 Once the agent reaches the target, consider re-solving the now discovered gridworld for the shortest path (eliminating any backtracking that may have occurred). Will this be an optimal path in the complete gridworld? Argue for, or give a counter example.
@@ -69,10 +67,9 @@ Answer:
 
 No, the shortest path that the agent has discovered will not necessarily be the most optimal path in the complete gridworld. In other words, it might be, but it cannot be assumed.
 
-The key sentence here from the logic cycle the agent follows is, “Based on its current knowledge of the environment, it plans a path from its 'current position' to the goal”. There may very well be a case such that the shortest path in the discovered gridworld is also the optimal path of the complete gridworld, but in general, because replanning means trying to determine what the next best path is from the “current position” as opposed to looking at all discovered cells and deciding the best place to restart the search, this will not always be the case.
+The key sentence here from the logic cycle the agent follows is, “Based on its current knowledge of the environment, it plans a path from its \textbf{'current position'} to the goal”. There may very well be a case such that the shortest path in the discovered gridworld is also the optimal path of the complete gridworld, but in general, because replanning means trying to determine what the next best path is from the “current position” as opposed to looking at all discovered cells and deciding the best place to restart the search, this will not always be the case.
 
-The argument above can be seen in the maze run figures 1 and 2, located below. Since the agent encounters many blocked cells in its path, it's forced to replan multiple times. During these replanning steps, it's put into a position where it must make the best decision from where it is currently, but it doesn't know what path on the virtual "fork in the road" to actually take since it has no knowledge of the nebulous cloud ahead, and once it chooses one path, it may be stuck on a less optimal path as compared to the complete gridworld.
-
+The argument above can be seen in the maze run figures 1 and 2, located below. Since the agent encounters many blocked cells in its path, it's forced to replan multiple times. During these replanning steps, it's put into a position where it must make the best decision from where it is currently, but it doesn't know what path on the virtual "fork in the road" to actually take since it has no knowledge of the nebulous cloud ahead. Once it chooses one path, it may be stuck on a less optimal path as compared to the complete gridworld.
 
 \newpage
 \begin{figure}[h]
@@ -91,8 +88,96 @@ The argument above can be seen in the maze run figures 1 and 2, located below. S
  
 \newpage
 \exercise*
-Solvability A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on p? Given dim = 101, how does solvability depend on p? For a range of p values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold p0 where for p < p0, most mazes are solvable, but p > p0, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
+Solvability: A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on p? Given dim = 101, how does solvability depend on p? For a range of p values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold p0 where for p < p0, most mazes are solvable, but p > p0, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
 
+Answer:
 
+To answer this question, we ran trials for solving the gridworld of density probabilities ranging from 0.0 to 0.4 at an interval of 0.025. For every given density, we ran 30 trials, recorded which ones were solvable and which ones weren’t, and then we took the percentages (averages) and plotted density vs. solvability.
+
+As you can see below in the table / graph, there were some interesting results, but overall the downward trend as density increased was what I would have expected. However, it was intriguing to me that the solvability followed that of a quadratic relationship versus a linear one. It becomes obvious when looking at the graph that the solvability decreases more rapidly as density increases. It is logical that the more obstacles are in the way, the harder it will be to make it to the goal, but it's also worth noting that the maze is almost always solvable for densities from 0 to 0.1. I suppose the blocked cells would have to be arranged rather distinctly to be able to block the agent with such a low density. Meanwhile, the more obstacles are in the maze, it doesn't take a special arrangement to completely block the agent from moving forward towards the goal node. For example, if just the cells to the start node's south and east are blocked, there's nothing the agent can do, and that becomes all the more common the higher the density gets, let alone blocked cells just past that. And we were having trouble finding any mazes that were actually solvable as we approached 0.35 and 0.4. Interesting results!
+
+Besides that, having applied a quadratic line of best fit, we extrapolate that the p0 value that we were looking for, where for p > p0 most mazes aren’t solvable (we're assuming 50 percent of mazes, a simple majority in other words), is equal to 0.286, which was a little bit surprising (in line with the prior discussion). So, in conclusion, we found that \textbf{p0 = 0.286}.
+
+// INSERT GRAPH FOR Q4
+
+\newpage
+\exercise*
+Heuristics: Among environments that are solvable, is one heuristic uniformly better than the other for running A*? How can they be compared? Plot the relevant data and justify your conclusions. Again, you may take each gridworld as known, and thus only search once.
+
+Answer:
+
+We decided that the metric to compare the performance of the heuristics was the runtime of the algorithm itself. Of course, this is specifically for running A* with full knowledge of the gridworld and the given heuristic.
+
+According to the data provided below, we can see the clear winner in terms of quickest runtime is the Manhattan distance heuristic. On average, it performed faster than both the Chebyshev distance heuristic and the Euclidean distance heuristic. The data speaks for itself for the most part, however we'll discuss some of the thought process behind the decision to pick this specific metric.
+
+This is certainly not the only metric that could’ve been chosen to compare the performance of these heuristics against each other, but I will reference something from class when speaking of performance of the algorithms we've been studying recently. There’s a point where the distance between the best and “good enough” / “close enough” is negligible compared to the effort that would need to be put in to find the absolute best outcome. In terms of this situation where we want to find the shortest distance to the goal cell, the difference between one heuristic’s distance to goal and the next is not as significant as the time difference (which is displayed by the data collected). Manhattan has a pretty clear dominance over the other two in runtime, and if the output is “good enough” for our purposes compared with metrics like trajectory length and shortest path in final discovered gridworld in performances of other heuristics, then that’s the appropriate heuristic to use from here on out.
+
+With that being said, we find that the \textbf{Manhattan distance heuristic} is the best performing, and we choose to use it for all future trials throughout the rest of the report.
+
+// INSERT DATA FOR Q5
+
+\newpage
+\exercise*
+Performance: Taking dim = 101, for a range of density p values from 0 to min(p0, 0.33), and the heuristic chosen as best in Q5, repeatedly generate gridworlds and solve them using Repeated
+Forward A*. Use as the field of view each immediately adjacent cell in the compass directions. Discuss your results. Are they as you expected? Explain.
+
+Answer:
+
+Below, one can observe the various performance metrics of Repeated A* plotted out for a range of densities from 0 to 0.275 (which is just shy of our p0 = 0.286) at an interval of 0.025. For each density, we collected data for 30 trials and took averages as needed from there. As discussed in Q5, we utilized the Manhattan distance heuristic as we found that to be the best performing overall.
+
+A big takeaway is that there is an exponential relationship between density and trajectory length. In a similar way (but not completely the same since it's inverse), trajectory length seems to have the opposite tendency as solvability. As density increases, trajectory will get exponentially longer and solvability will decrease in a quasi-similar fashion. 
+
+I think it would be fair to say, based on the data we've collected, that the higher the density, the more obstacles could potentially halt the agent and so the number of possible paths also decreases. As the gridworld becomes more and more restricted, the possible paths decrease in number and the average path lengthens. This is why we see 1) an increase in the average trajectory and 2) a decrease in the solvability.
+
+// INSERT Q6 DENSITY VS AVG TRAJECTORY LENGTH GRAPH
+
+Another interesting observation is that the exponential relationship persists with density versus average trajectory length / length of shortest path in the final discovered gridworld, but we see a linear growth in density versus length of shortest path in the final discovered gridworld / length of shortest path in the complete gridworld. One other thing to note is that throughout all of these trials, the length of shortest path in the complete gridworld stayed very consistent only varying as much as 6 cells and almost universally staying at 201 (this is of course counting the start node as a cell in the path).
+
+The latter graph with the linear line of best fit surprises me though. Why is this the case? I would make an educated guess based on the data presented before me that while there is more work that must be put into the agent travelling through the maze with more and more collisions, the ending performance doesn't grow as rapidly. This is perhaps a great compliment to the performance of the algorithm, that even though the agent is having to travel and collide more, we still end up finding a relatively short path as compared to the most optimal shortest path. 
+
+// INSERT Q6 DENSITY VS AVG TRAJECTORY OVER LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD GRAPH
+
+// INSERT Q6 DENSITY VS AVG LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD OVER LENGTH IN COMPLETE GRIDWORLD
+
+Lastly, we can see that there's also an exponential relationship between density and the average number of cells processed. Taking what we've seen in Q4 and the first data set of this question into account, we expected this outcome. One thing of note is that the trend is almost exactly the same as that of trajectory length, but the "constant" values of the best fit equation are just slightly inflated, and this makes sense as well. We're not counting blocked cells in our trajectory, but we have to process them if we run into them. The more collisions we have, the greater the difference between cells processed and trajectory in a fashion that keeps the rate of rate of growth similar, if that makes sense.
+
+// INSERT Q6 DENSITY VS NUMBER OF CELLS PROCESSED
+
+\newpage
+\exercise*
+Performance Part 2: Generate and analyze the same data as in Q6, except using only the cell in the direction of attempted motion as the field of view. In other words, the agent may attempt to move in a given direction, and only discovers obstacles by bumping into them. How does the reduced field of view impact the performance of the algorithm?
+
+Answer:
+
+Below, one can observe the various performance metrics of Repeated A* with a limited line of sight plotted out for a range of densities from 0 to 0.275 (which is just shy of our p0 = 0.286) at an interval of 0.025. These are plotted against the results from Q6 as well to see the relationship between the two environments, so refer to the purple data points and the red line of best fit. For each density, we collected data for 30 trials and took averages as needed from there. As discussed in Q5, we utilized the Manhattan distance heuristic as we found that to be the best performing overall.
+
+Overall, these results surprised our group. While we can see in the plotted graphs below that the trends for no-sight A* are all slightly worse than those of A* that can see in all cardinal directions, we would've expected there to be a greater difference in performance. The handicap doesn't seem to have as much of an effect as it would originally seem.
+
+I wonder if the difference in performance would become even more dramatic the higher the density would become, as the plots and best fit curves would suggest. The reason I say this is because for a lot of lower densities, there aren't too many collisions and in a lot of cases, the agent doesn't need revisit too many areas of the graph twice. For example, at a density like 0.1, the agent might have a block in its path, but it can easily go around that block in the middle of mostly unblocked cells and never have to reroute back to that area. In other words, the forward progress is pretty consistent and unless there's a really tricky situation, the knowledge that the prior agent would have of seeing in all cardinal directions is not as big a benefit as it would first appear. 
+
+However, like I said, once the probability of the maze being solvable gets less and less and more collisions pile up and the trajectory length gets higher, perhaps a really significant difference in performance would show itself.
+
+// INSERT Q7 DENSITY VS AVG TRAJECTORY LENGTH GRAPH
+
+// INSERT Q7 DENSITY VS AVG TRAJECTORY OVER LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD GRAPH
+
+// INSERT Q7 DENSITY VS AVG LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD OVER LENGTH IN COMPLETE GRIDWORLD
+
+// INSERT Q7 DENSITY VS NUMBER OF CELLS PROCESSED
+
+\newpage
+\exercise*
+Improvements: Repeated A* may suffer in that the best place to re-start A* from may
+not be where you currently are - for instance if you are at the dead end of a long hallway, you can save some effort by backtracking to the end of the hallway (recycling information you already have) before restarting the A* search. By changing where you restart the search process, can you cut down the overall runtime? What effect does this have on the overall trajectory (given that you have to travel between the current position and the new initial search position)?
+
+Answer:
+
+// INSERT Q8 DENSITY VS AVG TRAJECTORY LENGTH GRAPH
+
+// INSERT Q8 DENSITY VS AVG TRAJECTORY OVER LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD GRAPH
+
+// INSERT Q8 DENSITY VS AVG LENGTH OF SHORTEST PATH IN FINAL DISCOVERED GRIDWORLD OVER LENGTH IN COMPLETE GRIDWORLD
+
+// INSERT Q8 DENSITY VS NUMBER OF CELLS PROCESSED
 
 \end{document}
