@@ -1730,9 +1730,9 @@ while runnable:
                 maze_copy[0][0] = 's'
                 maze_copy[size-1][size-1] = 'g'
 
-                print('Path to Goal found with repeat Astar. Grids traveled: ', path_len)
+                print('Path to Goal found with repeat BFS. Grids traveled: ', path_len)
                 print('Number of grids popped: ', grid_counter)
-                print('Repeat Forward Astar: %s seconds used'% (total_time))
+                print('Repeat Forward BFS: %s seconds used'% (total_time))
                 print('\n')
                 
                 # NOW FOR BEST PATH IN PATH FOUND BY FORWARD ASTAR
@@ -1759,9 +1759,9 @@ while runnable:
                 maze_copy[0][0] ='s'
                 maze_copy[size-1][size-1] = 'r'
 
-                print('Shortest path in info from Astar: ', len(best_path))
+                print('Shortest path in info from BFS: ', len(best_path))
 
-                print('Shortest path in Astar: %s seconds used'% (time.time() - path_time))
+                print('Shortest path in BFS: %s seconds used'% (time.time() - path_time))
                 print('\n')
                 
                 window2 = display_maze(maze_copy)
