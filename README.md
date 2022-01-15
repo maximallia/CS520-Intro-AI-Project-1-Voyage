@@ -1,4 +1,4 @@
-# CS520-AI-Voyage
+# CS520-Intro-AI-Project-1-Voyage
 CS520 Intro AI. Assignment #1: Voyage into the Unknown
 
 
@@ -34,3 +34,6 @@ Repeated Forward A* moves the agent along the identified path, until it either s
 
 In order to analyze algorithms for this problem, we need to generate consistent environments for comparison. Do the following: for a dim by dim array, let each cell independently be blocked with probability p, and empty with probability 1 − p. Exclude the upper left corner (chosen to be the start position) and the lower right corner (chosen to be the end position) from being blocked. Write a function to generate random gridworlds in this way for a given value of p (0 < p < 1).
 
+MORE INFO: Assignment 1.pdf
+
+FINAL REPORT: Daniel Ying dty16 Zachary Tarman zpt2 project 1.pdf
